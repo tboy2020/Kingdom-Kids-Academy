@@ -154,7 +154,52 @@ h2{font-family:'Fredoka One',cursive}
       <button class="nav-back" style="flex:1;text-align:center;font-size:12px;opacity:.5" id="filter-done" onclick="filterTopics('done')">✅ Done</button>
     </div>
     <div class="topic-grid" id="topic-grid"></div>
-    <div style="font-size:11px;color:#555;text-align:center;margin-top:20px">"I can do all things through Christ" — Philippians 4:13</div>
+    <!-- PARENT SECTION -->
+    <div style="margin-top:24px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px">
+      <div style="display:flex;gap:8px">
+        <button class="nav-back" style="flex:1;text-align:center;font-size:13px;padding:12px" onclick="showParentMenu()">👨‍👩‍👧‍👦 Parent Menu</button>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#555;text-align:center;margin-top:14px">"I can do all things through Christ" — Philippians 4:13</div>
+  </div>
+</div>
+
+<!-- PARENT MENU SCREEN -->
+<div class="screen" id="s-parent">
+  <div class="nav">
+    <button class="nav-back" onclick="showTopics()">← Back</button>
+    <div class="nav-title">👨‍👩‍👧‍👦 Parent Menu</div>
+    <span></span>
+  </div>
+  <div class="wrap">
+    <div style="text-align:center;margin:10px 0">
+      <div style="font-size:48px">👨‍👩‍👧‍👦</div>
+      <h2 style="color:#ffd200;font-size:20px">Parent Menu</h2>
+      <p style="font-size:12px;color:#888">Review questions, check progress, reset data</p>
+    </div>
+
+    <!-- Review Topics -->
+    <div style="margin:16px 0">
+      <div style="font-size:13px;color:#a5b4fc;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">📋 Review Questions</div>
+      <div style="font-size:12px;color:#888;margin-bottom:8px">Tap any topic to click through every question with answers and hints</div>
+      <div id="parent-review-list"></div>
+    </div>
+
+    <!-- Progress Overview -->
+    <div style="margin:16px 0">
+      <div style="font-size:13px;color:#a5b4fc;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">📊 Progress Overview</div>
+      <div id="parent-progress"></div>
+    </div>
+
+    <!-- Reset Options -->
+    <div style="margin:20px 0">
+      <div style="font-size:13px;color:#f87171;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🗑️ Reset Options</div>
+      <div id="parent-reset-list"></div>
+      <button onclick="resetAllProgress()" style="width:100%;background:rgba(248,113,113,.12);border:2px solid rgba(248,113,113,.3);border-radius:14px;padding:12px;font-family:'Fredoka One',cursive;font-size:14px;color:#f87171;cursor:pointer;margin-top:10px">🗑️ Reset ALL Progress</button>
+    </div>
+
+    <!-- Change Profile -->
+    <button onclick="showProfile()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:12px;font-family:'Fredoka One',cursive;font-size:14px;color:#aaa;cursor:pointer;margin-top:8px">👤 Change Profile / Name</button>
   </div>
 </div>
 
@@ -539,6 +584,7 @@ function loadPracticeQ(){
   // Reset UI
   el('p-feedback').className='feedback-box';
   el('p-feedback').style.display='none';
+  el('p-opts').style.pointerEvents='auto';
   el('p-next').style.display='none';
   el('p-hint').style.display='flex';
   el('p-opts').style.opacity=1;
@@ -571,6 +617,7 @@ function selectAnswer(idx){
     sessionCorrect++;
     sessionScore++;
     var enc=pick(ENCOURAGE);
+    fb.style.display='block';
     fb.className='feedback-box correct show';
     el('fb-icon').textContent='✅';
     el('fb-msg').textContent=enc;
@@ -581,6 +628,7 @@ function selectAnswer(idx){
   } else {
     sessionWrong++;
     var verse=pick(VERSES);
+    fb.style.display='block';
     fb.className='feedback-box wrong show';
     el('fb-icon').textContent='❌';
     el('fb-msg').textContent='Not quite!';
@@ -604,6 +652,7 @@ function useHint(){
   el('p-hint').style.display='none';
 
   var fb=el('p-feedback');
+  fb.style.display='block';
   fb.className='feedback-box hint-fb show';
   el('fb-icon').textContent='💡';
   el('fb-msg').textContent='Here\'s a hint! (-1 point)';
@@ -679,6 +728,105 @@ function renderReviewQ(){
 }
 function reviewNext(){reviewIdx=Math.min(reviewIdx+1,reviewQs.length-1);renderReviewQ();}
 function reviewPrev(){reviewIdx=Math.max(reviewIdx-1,0);renderReviewQ();}
+
+// ═══ PARENT MENU ═══
+function showParentMenu(){
+  renderParentReviewList();
+  renderParentProgress();
+  renderParentResets();
+  show('s-parent');
+}
+
+function renderParentReviewList(){
+  var list = el('parent-review-list');
+  if(!list) return;
+  list.innerHTML = '';
+  var topics = getTopicsForGrade();
+  topics.forEach(function(topic){
+    var totalQ = 0;
+    topic.subs.forEach(function(s){ totalQ += s.q.length; });
+    var icon = TOPIC_ICONS[topic.id] || '📘';
+    var btn = document.createElement('button');
+    btn.style.cssText = 'width:100%;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(108,99,255,.2);border-radius:12px;padding:10px 12px;margin-bottom:6px;cursor:pointer;text-align:left';
+    btn.innerHTML = '<span style="font-size:22px">'+icon+'</span><span style="flex:1;font-family:Fredoka One,cursive;font-size:13px;color:#fff">'+topic.name+'</span><span style="font-size:11px;color:#888">'+totalQ+' Q</span><span style="color:#a5b4fc">▶</span>';
+    btn.onclick = function(){ startReview(topic); };
+    list.appendChild(btn);
+  });
+}
+
+function renderParentProgress(){
+  var container = el('parent-progress');
+  if(!container) return;
+  var prog = getProgress();
+  var topics = getTopicsForGrade();
+  var html = '';
+  var totalCorrect = 0, totalWrong = 0, totalSessions = 0;
+
+  topics.forEach(function(topic){
+    var tp = prog[topic.id];
+    if(!tp || tp.sessions === 0) return;
+    totalCorrect += tp.totalCorrect;
+    totalWrong += tp.totalWrong;
+    totalSessions += tp.sessions;
+    var totalQ = 0;
+    topic.subs.forEach(function(s){ totalQ += s.q.length; });
+    var pct = Math.min(100, Math.round(tp.totalCorrect / Math.max(1, totalQ) * 100));
+    var icon = TOPIC_ICONS[topic.id] || '📘';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    html += '<span style="font-size:18px">'+icon+'</span>';
+    html += '<div style="flex:1"><div style="font-size:12px;color:#fff;font-weight:700">'+topic.name+'</div>';
+    html += '<div style="height:4px;background:rgba(255,255,255,.1);border-radius:4px;margin-top:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:4px"></div></div></div>';
+    html += '<span style="font-size:11px;color:#4ade80;font-weight:800">'+tp.totalCorrect+'✓</span>';
+    html += '<span style="font-size:11px;color:#f87171">'+tp.totalWrong+'✗</span>';
+    html += '</div>';
+  });
+
+  if(!html){
+    html = '<div style="text-align:center;color:#666;font-size:13px;padding:12px">No sessions played yet.</div>';
+  } else {
+    html = '<div style="background:rgba(255,210,0,.06);border-radius:10px;padding:10px;margin-bottom:10px;text-align:center;font-size:12px;color:#ffd200">'
+      +totalSessions+' sessions · '+totalCorrect+' correct · '+totalWrong+' wrong</div>' + html;
+  }
+  container.innerHTML = html;
+}
+
+function renderParentResets(){
+  var list = el('parent-reset-list');
+  if(!list) return;
+  list.innerHTML = '';
+  var prog = getProgress();
+  var topics = getTopicsForGrade();
+  topics.forEach(function(topic){
+    var tp = prog[topic.id];
+    if(!tp || tp.sessions === 0) return;
+    var btn = document.createElement('button');
+    btn.style.cssText = 'width:100%;display:flex;align-items:center;gap:8px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.15);border-radius:10px;padding:8px 12px;margin-bottom:4px;cursor:pointer;text-align:left;font-size:12px;color:#f87171;font-family:Nunito,sans-serif';
+    btn.textContent = '🗑️ Reset ' + topic.name;
+    btn.onclick = function(){
+      if(confirm('Reset progress for '+topic.name+'? This cannot be undone.')){
+        var p = getProgress();
+        delete p[topic.id];
+        lsSet('kka_progress', p);
+        renderParentProgress();
+        renderParentResets();
+        alert(topic.name + ' progress has been reset.');
+      }
+    };
+    list.appendChild(btn);
+  });
+  if(!list.children.length){
+    list.innerHTML = '<div style="text-align:center;color:#666;font-size:12px;padding:8px">No progress to reset yet.</div>';
+  }
+}
+
+function resetAllProgress(){
+  if(confirm('Reset ALL progress for ALL topics? This cannot be undone.')){
+    lsSet('kka_progress', {});
+    renderParentProgress();
+    renderParentResets();
+    alert('All progress has been reset.');
+  }
+}
 
 // ═══ BOOT ═══
 profile=lsGet('kka_profile');
