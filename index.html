@@ -405,7 +405,7 @@ function startApp(){
   profile={name:name,grade:selGrade};
   lsSet('kka_profile',profile);
   showTopics();
-  speak('Welcome '+name+'! Let us learn and grow together with God! Choose a topic to start.');
+  speak('Welcome '+name+'! Let us learn and grow together with God! Choose a topic.');
 }
 function showProfile(){
   profile=null;
@@ -515,6 +515,8 @@ function startPractice(topic){
   sessionCorrect=0;
   sessionWrong=0;
   sessionHints=0;
+  correctStreak=0;
+  lastSubtopic='';
 
   el('p-topic-name').textContent=(TOPIC_ICONS[topic.id]||'📘')+' '+topic.name;
   el('p-nav-title').textContent=topic.name;
@@ -522,12 +524,30 @@ function startPractice(topic){
   loadPracticeQ();
 }
 
+var lastSubtopic='';
+var correctStreak=0;
+
 function loadPracticeQ(){
   if(currentQIdx>=currentQuestions.length){endPractice();return;}
   var q=currentQuestions[currentQIdx];
   answered=false;
 
-  // Update progress bar
+  // Announce sub-topic when it changes
+  var newSub=q.sub||'';
+  if(newSub!==lastSubtopic){
+    lastSubtopic=newSub;
+    clearSpeech();
+    speak('This is '+newSub+'!', function(){
+      loadPracticeQInner(q);
+    });
+    // Update UI immediately
+    updatePracticeUI(q);
+    return;
+  }
+  loadPracticeQInner(q);
+}
+
+function updatePracticeUI(q){
   var pct=Math.round(currentQIdx/currentQuestions.length*100);
   el('p-bar').style.width=pct+'%';
   el('p-qnum').textContent='Q '+(currentQIdx+1)+'/'+currentQuestions.length;
@@ -535,6 +555,16 @@ function loadPracticeQ(){
   el('p-subtopic').textContent=q.sub;
   el('p-qtext').textContent=q.q;
   el('p-qcount').textContent='Question '+(currentQIdx+1)+' of '+currentQuestions.length;
+  el('p-feedback').className='feedback-box';
+  el('p-feedback').style.display='none';
+  el('p-next').style.display='none';
+  el('p-hint').style.display='flex';
+  el('p-mic').style.display='block';
+}
+
+function loadPracticeQInner(q){
+
+  updatePracticeUI(q);
 
   // Set options
   var opts=q.o&&q.o.length>=3?q.o.slice():[q.a, q.a+1, q.a-1];
@@ -551,13 +581,7 @@ function loadPracticeQ(){
     b.setAttribute('data-val',String(opts[i]));
   });
 
-  // Reset UI
-  el('p-feedback').className='feedback-box';
-  el('p-feedback').style.display='none';
-  el('p-next').style.display='none';
-  el('p-hint').style.display='flex';
-  el('p-opts').style.opacity=1;
-  el('p-mic').style.display='block';
+  // Options setup
 
   // Speak question
   clearSpeech();
@@ -585,28 +609,31 @@ function selectAnswer(idx){
   if(correct){
     sessionCorrect++;
     sessionScore++;
+    correctStreak++;
     var enc=pick(ENCOURAGE);
-    fb.style.display='block';
+    var useName=(sessionCorrect===1||sessionCorrect%5===0);
+    var voiceMsg=useName?(enc+' '+profile.name+'!'):(enc+'!');
     fb.style.display='block';
     fb.className='feedback-box correct show';
     el('fb-icon').textContent='✅';
     el('fb-msg').textContent=enc;
-    el('fb-detail').textContent=profile.name+' got it right! Score: '+sessionScore;
+    el('fb-detail').textContent='Score: '+sessionScore;
     el('fb-verse').textContent='';
     clearSpeech();
-    speak(enc+' '+profile.name+'! The answer is '+q.a+'.');
+    speak(voiceMsg+' The answer is '+q.a+'.');
   } else {
     sessionWrong++;
     var verse=pick(VERSES);
     fb.style.display='block';
+    correctStreak=0;
     fb.style.display='block';
     fb.className='feedback-box wrong show';
     el('fb-icon').textContent='❌';
     el('fb-msg').textContent='Not quite!';
-    el('fb-detail').textContent='The answer is '+q.a+'. Keep trying!';
+    el('fb-detail').textContent='The answer is '+q.a+'. Keep going!';
     el('fb-verse').textContent='✝️ '+verse;
     clearSpeech();
-    speak("Not quite, "+profile.name+". The answer is "+q.a+". "+verse);
+    speak("Not quite. The answer is "+q.a+". "+verse);
   }
 
   el('p-score').textContent='⭐ '+sessionScore;
@@ -658,9 +685,9 @@ function endPractice(){
 
   show('s-result');
   clearSpeech();
-  var msg=sessionCorrect>=total*0.8?'Outstanding '+profile.name+'! You got '+sessionCorrect+' out of '+total+' correct!':
-    sessionCorrect>=total*0.6?'Well done '+profile.name+'! '+sessionCorrect+' out of '+total+'!':
-    'Good effort '+profile.name+'! Keep practising! '+sessionCorrect+' out of '+total+'.';
+  var msg=sessionCorrect>=total*0.8?'Outstanding '+profile.name+'! You got '+sessionCorrect+' out of '+total+' correct! God is proud of you!':
+    sessionCorrect>=total*0.6?'Well done '+profile.name+'! '+sessionCorrect+' out of '+total+'! Keep it up!':
+    'Good effort '+profile.name+'! You got '+sessionCorrect+' out of '+total+'. Keep practising!';
   speak(msg+' '+verse);
 }
 
