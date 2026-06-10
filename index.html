@@ -364,6 +364,7 @@ if(window.speechSynthesis){
 
 var speechQueue=[];
 var isSpeaking=false;
+var speechCancelled=false;
 function speak(text,onDone){
   if(!voiceOn||!window.speechSynthesis||!text){if(onDone)onDone();return;}
   speechQueue.push({text:text,onDone:onDone});
@@ -372,17 +373,18 @@ function speak(text,onDone){
 function processSQ(){
   if(!speechQueue.length){isSpeaking=false;return;}
   isSpeaking=true;
+  speechCancelled=false;
   var item=speechQueue.shift();
   try{
     var u=new SpeechSynthesisUtterance(item.text);
     u.rate=0.85;u.pitch=1.05;u.volume=1;
     if(voice)u.voice=voice;
-    u.onend=function(){if(item.onDone)item.onDone();setTimeout(processSQ,200);};
-    u.onerror=function(){if(item.onDone)item.onDone();setTimeout(processSQ,200);};
+    u.onend=function(){if(!speechCancelled&&item.onDone)item.onDone();if(!speechCancelled)setTimeout(processSQ,200);};
+    u.onerror=function(){if(!speechCancelled&&item.onDone)item.onDone();if(!speechCancelled)setTimeout(processSQ,200);};
     speechSynthesis.speak(u);
-  }catch(e){if(item.onDone)item.onDone();setTimeout(processSQ,200);}
+  }catch(e){if(!speechCancelled&&item.onDone)item.onDone();if(!speechCancelled)setTimeout(processSQ,200);}
 }
-function clearSpeech(){speechQueue=[];isSpeaking=false;if(window.speechSynthesis)try{speechSynthesis.cancel();}catch(e){}}
+function clearSpeech(){speechCancelled=true;speechQueue=[];isSpeaking=false;if(window.speechSynthesis)try{speechSynthesis.cancel();}catch(e){}}
 function toggleVoice(){voiceOn=!voiceOn;if(!voiceOn)clearSpeech();}
 
 // ═══ PROFILE ═══
@@ -586,7 +588,7 @@ function loadPracticeQInner(q){
   // Speak question (only once)
   if(!window._qSpoken || window._qSpoken !== currentQIdx){
     window._qSpoken = currentQIdx;
-    clearSpeech();
+    speechCancelled=false;
     speak(q.q);
   }
 }
