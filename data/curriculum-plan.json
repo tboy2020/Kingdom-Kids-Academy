@@ -1,0 +1,75 @@
+{
+  "product": "Kingdom Kids Learning Academy",
+  "subjects": ["Math", "Language Arts", "Science", "Social Studies", "Spelling"],
+  "grades": {
+    "kindergarten": {
+      "math": {
+        "total_topics": 15,
+        "target_questions_per_topic": "15-25",
+        "topics": [
+          {"id": "k-count-10", "name": "Counting to 10", "desc": "Count objects, recognize numbers 1-10, count forward"},
+          {"id": "k-count-20", "name": "Counting to 20", "desc": "Count objects 11-20, ten frames, number order"},
+          {"id": "k-count-100", "name": "Counting to 100", "desc": "Count by 1s to 100, fill in missing numbers, hundred chart"},
+          {"id": "k-compare", "name": "Comparing Numbers", "desc": "More/less/equal, greater than/less than, compare groups"},
+          {"id": "k-add-5", "name": "Addition to 5", "desc": "Add with pictures, number bonds to 5, add 0"},
+          {"id": "k-add-10", "name": "Addition to 10", "desc": "Add with pictures, number lines, number bonds to 10"},
+          {"id": "k-sub-5", "name": "Subtraction to 5", "desc": "Take away with pictures, subtract 0, number bonds"},
+          {"id": "k-sub-10", "name": "Subtraction to 10", "desc": "Subtract with pictures, number lines, word problems"},
+          {"id": "k-shapes", "name": "Shapes", "desc": "2D shapes (circle, square, triangle, rectangle, hexagon), 3D shapes (sphere, cube, cone, cylinder)"},
+          {"id": "k-measure", "name": "Measurement", "desc": "Longer/shorter, heavier/lighter, taller/shorter, compare sizes"},
+          {"id": "k-money", "name": "Money", "desc": "Identify pennies, nickels, dimes; count coins to 25¢"},
+          {"id": "k-time", "name": "Time", "desc": "O'clock, daily schedule, morning/afternoon/night"},
+          {"id": "k-sort", "name": "Sorting & Patterns", "desc": "Sort by shape/color/size, AB/ABB/ABC patterns, what comes next"},
+          {"id": "k-multiply", "name": "Intro to Multiplication", "desc": "Equal groups, count by 2s and 5s, how many in all (2 groups of 3)"},
+          {"id": "k-divide", "name": "Intro to Division", "desc": "Fair sharing, split into equal groups, how many in each group"}
+        ]
+      }
+    },
+    "grade2": {
+      "math": {
+        "total_topics": 22,
+        "target_questions_per_topic": "20-30",
+        "topics": [
+          {"id": "g2-add-10", "name": "Addition to 10", "desc": "Basic facts, doubles, near doubles, add 0, commutative property", "status": "97 questions parsed from IXL workbook"},
+          {"id": "g2-add-20", "name": "Addition to 20", "desc": "Make ten to add, add 3 numbers, word problems, balance equations"},
+          {"id": "g2-sub-10", "name": "Subtraction to 10", "desc": "Basic facts, subtract 0, fact families, number lines"},
+          {"id": "g2-sub-20", "name": "Subtraction to 20", "desc": "Use ten to subtract, count back, word problems, balance equations"},
+          {"id": "g2-add-100", "name": "Addition to 100", "desc": "2-digit + 1-digit, 2-digit + 2-digit, with/without regrouping"},
+          {"id": "g2-sub-100", "name": "Subtraction to 100", "desc": "2-digit minus 1-digit, 2-digit minus 2-digit, regrouping"},
+          {"id": "g2-add-1000", "name": "Addition to 1000", "desc": "3-digit addition, with/without regrouping, word problems"},
+          {"id": "g2-sub-1000", "name": "Subtraction to 1000", "desc": "3-digit subtraction, with/without regrouping, word problems"},
+          {"id": "g2-place", "name": "Place Value", "desc": "Tens/ones, hundreds, thousands, expanded form, value of a digit"},
+          {"id": "g2-skip", "name": "Skip Counting & Patterns", "desc": "By 2s, 5s, 10s, 100s, forward/backward, sequences"},
+          {"id": "g2-even-odd", "name": "Even & Odd Numbers", "desc": "Identify, sort, patterns, number lines"},
+          {"id": "g2-compare", "name": "Comparing & Ordering", "desc": "Compare to 100/1000, greater/less, order numbers"},
+          {"id": "g2-word", "name": "Word Problems", "desc": "Addition/subtraction, comparison, two-step, mixed operations"},
+          {"id": "g2-multiply", "name": "Multiplication", "desc": "Equal groups, arrays, repeated addition, skip counting, word problems, times tables 1-5"},
+          {"id": "g2-divide", "name": "Division", "desc": "Fair sharing, equal groups, divide by 2/3/4/5, word problems, connection to multiplication"},
+          {"id": "g2-fractions", "name": "Fractions", "desc": "Halves, thirds, fourths, equal parts, fraction of a shape, fraction of a group"},
+          {"id": "g2-money", "name": "Money", "desc": "Coin values, count mixed coins, dollar bills, make change, word problems"},
+          {"id": "g2-time", "name": "Time", "desc": "Analog/digital clocks, to hour/half/quarter/5 min, AM/PM, elapsed time"},
+          {"id": "g2-measure", "name": "Measurement", "desc": "Inches, centimeters, feet, compare/estimate lengths, word problems"},
+          {"id": "g2-data", "name": "Data & Graphs", "desc": "Tally charts, bar graphs, pictographs, line plots, read/create"},
+          {"id": "g2-geometry", "name": "Geometry", "desc": "2D/3D shapes, sides/vertices, symmetry, partition shapes"},
+          {"id": "g2-names", "name": "Number Names & Estimation", "desc": "Word names to 1000, Roman numerals, rounding, estimation"}
+        ]
+      }
+    }
+  },
+  "question_structure": {
+    "per_question": {
+      "q": "Question text (what voice reads)",
+      "a": "Correct answer",
+      "type": "multiple-choice | number | word | true-false",
+      "options": ["A", "B", "C"],
+      "hint": {
+        "strategy": "Teaching approach name (e.g. 'near doubles', 'count on', 'draw it out')",
+        "script": "Full voice script that teaches how to solve this specific question",
+        "penalty": -1
+      },
+      "encourage": "Encouragement phrase spoken on correct answer"
+    }
+  },
+  "build_order": "Math first (both grades) → Language Arts → Science → Social Studies → Spelling",
+  "notes": "Multiplication and Division included for BOTH grades per Pastor Taiwo's request. K gets intro level (equal groups, sharing). 2nd Grade gets full tables 1-5 and division concepts."
+}
