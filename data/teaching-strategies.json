@@ -1,0 +1,746 @@
+{
+  "product": "Kingdom Kids Learning Academy",
+  "purpose": "Master reference for all teaching strategies per operation, per difficulty level, per grade. Every hint in the app draws from this file.",
+  "last_updated": "2026-06-10",
+  "strategies": {
+    "addition": {
+      "name": "Addition",
+      "icon": "\u2795",
+      "single_digit_to_10": {
+        "name": "Addition to 10 (single digit)",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Count On from the Bigger Number",
+        "when_to_use": "Any addition where both numbers are 0-10 and the sum is 10 or less",
+        "steps": [
+          "Find which number is BIGGER",
+          "Put the bigger number IN YOUR HEAD",
+          "Show the smaller number on your FINGERS",
+          "Count on from the bigger number, folding one finger each count",
+          "When all fingers are folded, that's your answer!"
+        ],
+        "example": {
+          "problem": "3 + 5",
+          "voice_script": "Which number is bigger? 5! Put 5 in your head. Now show 3 fingers. Count on from 5... 6, 7, 8! The answer is 8!",
+          "visual": "\ud83e\udde0=5, then \ud83d\udc466, \ud83d\udc467, \ud83d\udc468 \u2192 Answer: 8"
+        },
+        "special_cases": {
+          "add_0": {
+            "rule": "Adding 0 means nothing changes",
+            "voice": "7 plus 0? When you add zero, the number stays the same! 7 + 0 = 7!"
+          },
+          "add_1": {
+            "rule": "Adding 1 is the next number",
+            "voice": "6 plus 1? That's just the next number after 6... which is 7!"
+          },
+          "doubles": {
+            "rule": "Same number + same number = double",
+            "voice": "4 plus 4? That's a double! Think of 4 fingers on each hand. Count them all: 8!"
+          }
+        }
+      },
+      "single_digit_to_20": {
+        "name": "Addition to 20 (single digit, sums 11-20)",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Make 10, Then Add the Rest",
+        "when_to_use": "When two single-digit numbers add up to more than 10",
+        "why_not_fingers": "We only have 10 fingers! So we need a smarter strategy.",
+        "steps": [
+          "Look at both numbers. We need to MAKE 10 first.",
+          "Ask: how many more does the BIGGER number need to reach 10?",
+          "Take that many from the smaller number",
+          "Now you have 10 + whatever is left",
+          "10 + anything is easy \u2014 just put a 1 in front!"
+        ],
+        "example": {
+          "problem": "7 + 8",
+          "voice_script": "7 plus 8. Let's make 10 first! 8 needs 2 more to reach 10. Take 2 from the 7, leaving 5. Now we have 10 + 5 = 15!",
+          "visual": "8 + 2 = 10, 7 - 2 = 5, so 10 + 5 = 15 \u2705",
+          "breakdown": "7 + 8 \u2192 8 + (2 + 5) \u2192 (8 + 2) + 5 \u2192 10 + 5 = 15"
+        },
+        "alternative": {
+          "name": "Near Doubles",
+          "when": "When numbers are close together (like 7+8, 6+7)",
+          "voice": "7 plus 8? I know 7 + 7 = 14. And 8 is just one more than 7. So 14 + 1 = 15!"
+        }
+      },
+      "double_digit_plus_single": {
+        "name": "Double digit + single digit",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Add the Ones, Keep the Tens",
+        "when_to_use": "When adding a 1-digit number to a 2-digit number (e.g., 34 + 5)",
+        "steps": [
+          "Look at the two-digit number. Split it into TENS and ONES",
+          "Add the single digit to the ONES part",
+          "If the ones add up to less than 10, just put it back with the tens",
+          "If the ones add up to 10 or more, carry 1 to the tens"
+        ],
+        "example_no_carry": {
+          "problem": "34 + 5",
+          "voice_script": "34 plus 5. Split 34: that's 30 and 4. Now add the ones: 4 + 5 = 9. Put it back: 30 + 9 = 39!",
+          "visual": "34 = 30 + 4, then 4 + 5 = 9, so 30 + 9 = 39"
+        },
+        "example_with_carry": {
+          "problem": "37 + 6",
+          "voice_script": "37 plus 6. Split 37: that's 30 and 7. Add the ones: 7 + 6 = 13. That's more than 10! 13 is 10 + 3. Carry the 10 to the tens: 30 + 10 = 40. Answer: 40 + 3 = 43!",
+          "visual": "37 = 30 + 7, then 7 + 6 = 13, so 30 + 13 = 30 + 10 + 3 = 43"
+        }
+      },
+      "double_digit_plus_double": {
+        "name": "Double digit + double digit",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Stack and Add Columns (right to left)",
+        "when_to_use": "When adding two 2-digit numbers",
+        "steps": [
+          "Write the numbers stacked on top of each other",
+          "Line up the ONES column and the TENS column",
+          "Add the ONES column first (right side)",
+          "If the ones total is 10 or more, write the ones digit and CARRY the 1",
+          "Add the TENS column (plus any carry)",
+          "Write the tens digit. That's your answer!"
+        ],
+        "example_no_carry": {
+          "problem": "42 + 35",
+          "voice_script": "Stack them up! Ones first: 2 + 5 = 7, write 7. Tens next: 4 + 3 = 7, write 7. Answer: 77!",
+          "visual": "  42\n+ 35\n----\n  77"
+        },
+        "example_with_carry": {
+          "problem": "48 + 36",
+          "voice_script": "Stack them up! Ones first: 8 + 6 = 14. Write 4, carry the 1. Tens: 4 + 3 = 7, plus the carried 1 = 8. Answer: 84!",
+          "visual": "  48\n+ 36\n----\n  84  (carry the 1)"
+        }
+      },
+      "triple_digit": {
+        "name": "Triple digit addition (to 1000)",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Stack and Add 3 Columns",
+        "when_to_use": "Adding numbers up to 1000",
+        "steps": [
+          "Stack the numbers, line up ones, tens, hundreds",
+          "Add ONES first (right column). Carry if 10+",
+          "Add TENS next (middle column + carry). Carry if 10+",
+          "Add HUNDREDS last (left column + carry)",
+          "Read the answer!"
+        ],
+        "example": {
+          "problem": "347 + 285",
+          "voice_script": "Ones: 7 + 5 = 12. Write 2, carry 1. Tens: 4 + 8 = 12, plus 1 = 13. Write 3, carry 1. Hundreds: 3 + 2 = 5, plus 1 = 6. Answer: 632!",
+          "visual": "  347\n+ 285\n-----\n  632"
+        }
+      }
+    },
+    "subtraction": {
+      "name": "Subtraction",
+      "icon": "\u2796",
+      "single_digit_to_10": {
+        "name": "Subtraction within 10",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Count Up from the Smaller Number",
+        "when_to_use": "Any subtraction where both numbers are 10 or less",
+        "steps": [
+          "Put the SMALLER number in your head",
+          "Count UP to the BIGGER number on your fingers",
+          "How many fingers did you hold up? That's the answer!"
+        ],
+        "example": {
+          "problem": "9 - 4",
+          "voice_script": "9 minus 4. Put 4 in your head. Now count up to 9 on your fingers: 5, 6, 7, 8, 9! You held up 5 fingers. So 9 - 4 = 5!",
+          "visual": "\ud83e\udde0=4, then \ud83d\udc465, \ud83d\udc466, \ud83d\udc467, \ud83d\udc468, \ud83d\udc469 \u2192 5 fingers = 5"
+        },
+        "special_cases": {
+          "subtract_0": {
+            "voice": "8 minus 0? Taking away nothing means the number stays the same! 8!"
+          },
+          "subtract_itself": {
+            "voice": "6 minus 6? Take away all of them... nothing left! 0!"
+          },
+          "subtract_1": {
+            "voice": "7 minus 1? That's just the number right before 7... which is 6!"
+          }
+        }
+      },
+      "single_digit_to_20": {
+        "name": "Subtraction within 20",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Use 10 to Subtract",
+        "when_to_use": "When subtracting from a teen number (11-20)",
+        "steps": [
+          "Break the bigger number into 10 and the rest",
+          "Subtract from 10 first if the ones digit is too small",
+          "Add back whatever ones were left"
+        ],
+        "example": {
+          "problem": "15 - 8",
+          "voice_script": "15 minus 8. Break 15 into 10 and 5. Now, 10 minus 8 is easy: that's 2! Add back the 5: 2 + 5 = 7! So 15 - 8 = 7!",
+          "visual": "15 = 10 + 5 \u2192 10 - 8 = 2 \u2192 2 + 5 = 7 \u2705"
+        },
+        "alternative": {
+          "name": "Count Up",
+          "voice": "15 minus 8? Start at 8, count up to 15: 9, 10, 11, 12, 13, 14, 15. That's 7 counts! Answer: 7!"
+        }
+      },
+      "double_digit_minus_single": {
+        "name": "Double digit - single digit",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Subtract the Ones, Keep the Tens",
+        "when_to_use": "Subtracting a 1-digit number from a 2-digit number",
+        "example_no_borrow": {
+          "problem": "47 - 3",
+          "voice_script": "47 minus 3. The tens stay: 40. Subtract the ones: 7 - 3 = 4. Put it back: 40 + 4 = 44!"
+        },
+        "example_with_borrow": {
+          "problem": "43 - 7",
+          "voice_script": "43 minus 7. The ones: 3 minus 7? Can't do it! Borrow 10 from the tens. 40 becomes 30, and 3 becomes 13. Now 13 - 7 = 6. Answer: 30 + 6 = 36!"
+        }
+      },
+      "double_digit_minus_double": {
+        "name": "Double digit - double digit",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Stack and Subtract Columns (right to left)",
+        "when_to_use": "Subtracting two 2-digit numbers",
+        "steps": [
+          "Stack the numbers (bigger on top)",
+          "Subtract ONES column first",
+          "If top ones is smaller, BORROW 10 from the tens",
+          "Subtract TENS column (minus any borrowed)"
+        ],
+        "example": {
+          "problem": "72 - 38",
+          "voice_script": "Stack them! Ones: 2 minus 8? Can't! Borrow from tens. 7 tens becomes 6 tens, and 2 becomes 12. Now 12 - 8 = 4. Tens: 6 - 3 = 3. Answer: 34!",
+          "visual": "  72\n- 38\n----\n  34  (borrow from 7)"
+        }
+      },
+      "triple_digit": {
+        "name": "Triple digit subtraction",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Stack and Subtract 3 Columns with Borrowing",
+        "example": {
+          "problem": "523 - 287",
+          "voice_script": "Ones: 3 minus 7? Borrow! 13 - 7 = 6. Tens: 1 minus 8? Borrow again! 11 - 8 = 3. Hundreds: 4 - 2 = 2. Answer: 236!"
+        }
+      }
+    },
+    "multiplication": {
+      "name": "Multiplication",
+      "icon": "\u2716\ufe0f",
+      "concept_intro": {
+        "name": "What IS multiplication?",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Groups of Things \u2192 Count All",
+        "teaching_sequence": [
+          "Step 1: Show GROUPS of objects \u2014 'How many altogether?'",
+          "Step 2: Introduce the \u00d7 sign \u2014 it means 'groups of'",
+          "Step 3: Connect to REPEATED ADDITION \u2014 '3 \u00d7 4 = 4 + 4 + 4'",
+          "Step 4: Introduce ARRAYS \u2014 rows and columns they can draw",
+          "Step 5: Build toward skip counting through repeated adding"
+        ]
+      },
+      "single_digit_1_to_5": {
+        "name": "Times tables 1-5",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Groups \u2192 Repeated Addition \u2192 Count On",
+        "when_to_use": "Multiplying any two numbers where both are 1-5",
+        "steps": [
+          "Think: the first number tells you HOW MANY GROUPS",
+          "The second number tells you HOW MANY IN EACH GROUP",
+          "Draw the groups (or imagine them)",
+          "Use repeated addition: add the group size that many times",
+          "For \u00d71: the number stays the same (1 group of anything = that thing)",
+          "For \u00d72: it's doubles! You already know doubles from addition!",
+          "For \u00d75: count by 5s (like counting nickels)"
+        ],
+        "example": {
+          "problem": "4 \u00d7 3",
+          "voice_script": "4 times 3 means 4 groups of 3. Let's add: 3 plus 3 is 6. Plus 3 more is 9. Plus 3 more is 12! So 4 \u00d7 3 = 12!",
+          "visual": "\ud83d\udd35\ud83d\udd35\ud83d\udd35  \ud83d\udd35\ud83d\udd35\ud83d\udd35  \ud83d\udd35\ud83d\udd35\ud83d\udd35  \ud83d\udd35\ud83d\udd35\ud83d\udd35 \u2192 3 + 3 + 3 + 3 = 12"
+        },
+        "tricks": {
+          "times_1": "Any number \u00d7 1 = itself. 7 \u00d7 1 = 7. One group of 7 is just 7!",
+          "times_2": "Any number \u00d7 2 = double it. 6 \u00d7 2 = 6 + 6 = 12!",
+          "times_5": "Count by 5s! 5, 10, 15, 20, 25... like counting nickels!",
+          "times_0": "Any number \u00d7 0 = 0. Zero groups of anything = nothing!"
+        }
+      },
+      "single_digit_6_to_10": {
+        "name": "Times tables 6-10",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Break Apart into Known Facts",
+        "when_to_use": "When one or both numbers are 6-10",
+        "why": "Groups get big \u2014 8 groups of 7 is hard to count! So we break it into parts we already know.",
+        "steps": [
+          "Split the BIGGER number into two parts you know",
+          "Multiply each part separately",
+          "Add the two results together"
+        ],
+        "example": {
+          "problem": "7 \u00d7 6",
+          "voice_script": "7 times 6. Let's break 6 into 5 and 1. We know 7 \u00d7 5 = 35 (count by 5s!). And 7 \u00d7 1 = 7. Now add: 35 + 7 = 42! So 7 \u00d7 6 = 42!",
+          "visual": "7 \u00d7 6 = 7 \u00d7 5 + 7 \u00d7 1 = 35 + 7 = 42"
+        },
+        "alternative": {
+          "problem": "8 \u00d7 7",
+          "voice_script": "8 times 7. Break 7 into 5 and 2. We know 8 \u00d7 5 = 40 and 8 \u00d7 2 = 16. Add: 40 + 16 = 56!",
+          "visual": "8 \u00d7 7 = 8 \u00d7 5 + 8 \u00d7 2 = 40 + 16 = 56"
+        },
+        "tricks": {
+          "times_9": "9 \u00d7 any number: multiply by 10 then subtract the number. 9 \u00d7 7 = 70 - 7 = 63!",
+          "times_10": "Just add a zero! 10 \u00d7 6 = 60!"
+        }
+      },
+      "double_digit": {
+        "name": "Double digit multiplication",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Break Apart the Big Number",
+        "when_to_use": "Multiplying a double-digit number by a single digit",
+        "steps": [
+          "Split the double-digit number into TENS and ONES",
+          "Multiply the TENS part by the single digit",
+          "Multiply the ONES part by the single digit",
+          "ADD the two results together"
+        ],
+        "example": {
+          "problem": "14 \u00d7 3",
+          "voice_script": "14 times 3. Break 14 into 10 and 4. Now: 10 \u00d7 3 = 30. And 4 \u00d7 3 = 12. Add them: 30 + 12 = 42! So 14 \u00d7 3 = 42!",
+          "visual": "14 \u00d7 3 = (10 \u00d7 3) + (4 \u00d7 3) = 30 + 12 = 42"
+        }
+      }
+    },
+    "division": {
+      "name": "Division",
+      "icon": "\u2797",
+      "concept_intro": {
+        "name": "What IS division?",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Fair Sharing \u2192 Count Per Group",
+        "teaching_sequence": [
+          "Step 1: SHARING \u2014 'Deal cookies to friends equally'",
+          "Step 2: The \u00f7 sign means 'shared equally among' or 'split into groups of'",
+          "Step 3: Connect to multiplication \u2014 'Division asks: what \u00d7 3 = 12?'",
+          "Step 4: Repeated subtraction \u2014 'Keep taking away groups and count how many times'",
+          "Step 5: Check with multiplication \u2014 '12 \u00f7 3 = 4 because 4 \u00d7 3 = 12'"
+        ]
+      },
+      "simple_facts_1_to_5": {
+        "name": "Division by 1-5",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Fair Sharing \u2192 Think Multiplication",
+        "when_to_use": "Dividing where the divisor is 1-5 and answers are within the times tables",
+        "steps": [
+          "Think: 'I have THIS MANY things to share among THIS MANY groups'",
+          "Ask yourself: 'What number TIMES the divisor gives me the big number?'",
+          "If stuck: draw circles for groups, deal dots one by one, count per group"
+        ],
+        "example": {
+          "problem": "15 \u00f7 3",
+          "voice_script": "15 divided by 3. Think: what times 3 equals 15? Let's count by 3s: 3, 6, 9, 12, 15! That's 5 counts. So 15 \u00f7 3 = 5! Check: 5 \u00d7 3 = 15. Correct!",
+          "visual": "? \u00d7 3 = 15 \u2192 5 \u00d7 3 = 15 \u2705 \u2192 Answer: 5"
+        },
+        "fallback_for_young_kids": {
+          "strategy": "Draw and Deal",
+          "voice": "15 divided by 3? Draw 3 circles. Now deal 15 dots, one to each circle, going around. Count how many each circle got: 5! Answer: 5!",
+          "visual": "\u2b55=5dots  \u2b55=5dots  \u2b55=5dots \u2192 5 each!"
+        },
+        "tricks": {
+          "divide_by_1": "Any number \u00f7 1 = itself. 9 \u00f7 1 = 9. One group gets everything!",
+          "divide_by_itself": "Any number \u00f7 itself = 1. 7 \u00f7 7 = 1. Each person gets exactly one!",
+          "zero_divided": "0 \u00f7 any number = 0. Zero cookies shared among friends = nobody gets any!"
+        }
+      },
+      "facts_6_to_10": {
+        "name": "Division by 6-10",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Think Multiplication (reverse the times tables)",
+        "when_to_use": "Dividing by 6-10",
+        "steps": [
+          "Ask: 'What times THIS number gives me THAT number?'",
+          "Use the multiplication facts you already know!",
+          "If stuck: use repeated subtraction \u2014 keep subtracting the divisor and count how many times"
+        ],
+        "example": {
+          "problem": "56 \u00f7 8",
+          "voice_script": "56 divided by 8. Think: what times 8 equals 56? I know 7 \u00d7 8 = 56! So 56 \u00f7 8 = 7!",
+          "visual": "? \u00d7 8 = 56 \u2192 7 \u00d7 8 = 56 \u2705 \u2192 Answer: 7"
+        },
+        "fallback": {
+          "strategy": "Repeated Subtraction",
+          "voice": "56 \u00f7 8? Keep subtracting 8: 56, 48, 40, 32, 24, 16, 8, 0. Count: that's 7 times! Answer: 7!",
+          "visual": "56 - 8 = 48 (1) \u2192 48 - 8 = 40 (2) \u2192 ... \u2192 8 - 8 = 0 (7) \u2705"
+        }
+      },
+      "double_digit_dividend": {
+        "name": "Dividing larger numbers",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Break Apart and Divide Each Part",
+        "when_to_use": "When dividing a double-digit number that can be split",
+        "steps": [
+          "Break the big number into a TENS part and a ONES part that are both easy to divide",
+          "Divide each part separately",
+          "Add the results"
+        ],
+        "example": {
+          "problem": "84 \u00f7 4",
+          "voice_script": "84 divided by 4. Break 84 into 80 and 4. 80 \u00f7 4 = 20. And 4 \u00f7 4 = 1. Add: 20 + 1 = 21! So 84 \u00f7 4 = 21!",
+          "visual": "84 \u00f7 4 = (80 \u00f7 4) + (4 \u00f7 4) = 20 + 1 = 21"
+        }
+      }
+    },
+    "skip_counting": {
+      "name": "Skip Counting & Patterns",
+      "icon": "\ud83d\udd22",
+      "count_by_2s": {
+        "name": "Count by 2s",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Each number is 2 more than the last",
+        "voice": "We're counting by 2s! Like counting pairs of shoes: 2, 4, 6, 8, 10...",
+        "backward": "Going backward by 2s means subtract 2 each time"
+      },
+      "count_by_5s": {
+        "name": "Count by 5s",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Each number is 5 more \u2014 like counting nickels!",
+        "voice": "Count by 5s like counting nickels! 5, 10, 15, 20, 25... The ones digit goes 5, 0, 5, 0!"
+      },
+      "count_by_10s": {
+        "name": "Count by 10s",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Just change the tens digit \u2014 easiest skip counting!",
+        "voice": "10, 20, 30, 40... just change the first number and keep the 0!"
+      },
+      "find_pattern": {
+        "name": "Find the Pattern",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Find the RULE \u2014 how much does each number change by?",
+        "steps": [
+          "Look at the first two numbers. What's the difference?",
+          "Check: does the same difference work for the next pair?",
+          "Apply the rule to find the missing number"
+        ]
+      }
+    },
+    "even_odd": {
+      "name": "Even & Odd Numbers",
+      "icon": "\ud83d\udd35\ud83d\udd34",
+      "split_test": {
+        "name": "Split Test",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Can you split the number into 2 EQUAL groups? If yes = EVEN, if 1 left over = ODD",
+        "voice": "Try splitting it! 6 splits into 3 and 3 \u2014 nothing left over. EVEN! 7 splits into 3 and 3 with 1 left. ODD!"
+      },
+      "last_digit_rule": {
+        "name": "Last Digit Rule",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "For bigger numbers, just look at the LAST digit. If it's 0,2,4,6,8 = EVEN. If 1,3,5,7,9 = ODD.",
+        "voice": "The last digit tells you everything! 48 ends in 8 \u2014 EVEN! 73 ends in 3 \u2014 ODD!"
+      },
+      "addition_rules": {
+        "name": "Even/Odd Addition Rules",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "rules": [
+          "Even + Even = Even (4+6=10)",
+          "Odd + Odd = Even (3+5=8)",
+          "Even + Odd = Odd (2+7=9)"
+        ]
+      }
+    },
+    "place_value": {
+      "name": "Place Value",
+      "icon": "\ud83d\udccd",
+      "tens_and_ones": {
+        "name": "Tens and Ones",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Left digit = tens, right digit = ones. In 47: 4 tens (40) and 7 ones (7).",
+        "voice": "Every digit has a PLACE. The left digit is tens \u2014 it tells you how many groups of 10. The right digit is ones."
+      },
+      "hundreds_tens_ones": {
+        "name": "Hundreds, Tens, Ones",
+        "grades": [
+          "2G"
+        ],
+        "strategy": "Three digits: leftmost = hundreds, middle = tens, rightmost = ones.",
+        "voice": "In 356: 3 is hundreds (300), 5 is tens (50), 6 is ones (6). 300 + 50 + 6 = 356!"
+      },
+      "expanded_form": {
+        "name": "Expanded Form",
+        "grades": [
+          "K",
+          "2G"
+        ],
+        "strategy": "Break number into parts showing the value of each digit",
+        "example": "456 = 400 + 50 + 6"
+      }
+    }
+  },
+  "scripture_bank": {
+    "purpose": "Encouragement verses shown on wrong answers \u2014 different every time",
+    "note": "KJV and kid-friendly paraphrases mixed",
+    "verses": [
+      {
+        "text": "I can do all things through Christ which strengtheneth me.",
+        "ref": "Philippians 4:13"
+      },
+      {
+        "text": "Be strong and of a good courage; be not afraid.",
+        "ref": "Joshua 1:9"
+      },
+      {
+        "text": "The Lord is my helper, I will not fear.",
+        "ref": "Hebrews 13:6"
+      },
+      {
+        "text": "With God all things are possible.",
+        "ref": "Matthew 19:26"
+      },
+      {
+        "text": "Trust in the Lord with all thine heart.",
+        "ref": "Proverbs 3:5"
+      },
+      {
+        "text": "The Lord is my shepherd; I shall not want.",
+        "ref": "Psalm 23:1"
+      },
+      {
+        "text": "For God hath not given us the spirit of fear; but of power, and of love.",
+        "ref": "2 Timothy 1:7"
+      },
+      {
+        "text": "The joy of the Lord is your strength.",
+        "ref": "Nehemiah 8:10"
+      },
+      {
+        "text": "Commit thy way unto the Lord; trust also in him.",
+        "ref": "Psalm 37:5"
+      },
+      {
+        "text": "I will never leave thee, nor forsake thee.",
+        "ref": "Hebrews 13:5"
+      },
+      {
+        "text": "In all thy ways acknowledge him, and he shall direct thy paths.",
+        "ref": "Proverbs 3:6"
+      },
+      {
+        "text": "The Lord is good, a strong hold in the day of trouble.",
+        "ref": "Nahum 1:7"
+      },
+      {
+        "text": "God is our refuge and strength, a very present help in trouble.",
+        "ref": "Psalm 46:1"
+      },
+      {
+        "text": "Cast thy burden upon the Lord, and he shall sustain thee.",
+        "ref": "Psalm 55:22"
+      },
+      {
+        "text": "Delight thyself also in the Lord; and he shall give thee the desires of thine heart.",
+        "ref": "Psalm 37:4"
+      },
+      {
+        "text": "The Lord shall fight for you, and ye shall hold your peace.",
+        "ref": "Exodus 14:14"
+      },
+      {
+        "text": "Ye are the light of the world.",
+        "ref": "Matthew 5:14"
+      },
+      {
+        "text": "But they that wait upon the Lord shall renew their strength.",
+        "ref": "Isaiah 40:31"
+      },
+      {
+        "text": "For we walk by faith, not by sight.",
+        "ref": "2 Corinthians 5:7"
+      },
+      {
+        "text": "Be ye doers of the word, and not hearers only.",
+        "ref": "James 1:22"
+      },
+      {
+        "text": "A merry heart doeth good like a medicine.",
+        "ref": "Proverbs 17:22"
+      },
+      {
+        "text": "Let your light so shine before men.",
+        "ref": "Matthew 5:16"
+      },
+      {
+        "text": "Great is thy faithfulness.",
+        "ref": "Lamentations 3:23"
+      },
+      {
+        "text": "This is the day which the Lord hath made; we will rejoice and be glad in it.",
+        "ref": "Psalm 118:24"
+      },
+      {
+        "text": "Children, obey your parents in the Lord: for this is right.",
+        "ref": "Ephesians 6:1"
+      },
+      {
+        "text": "Train up a child in the way he should go.",
+        "ref": "Proverbs 22:6"
+      },
+      {
+        "text": "The Lord bless thee, and keep thee.",
+        "ref": "Numbers 6:24"
+      },
+      {
+        "text": "Every good gift and every perfect gift is from above.",
+        "ref": "James 1:17"
+      },
+      {
+        "text": "The earth is the Lord's, and the fulness thereof.",
+        "ref": "Psalm 24:1"
+      },
+      {
+        "text": "A soft answer turneth away wrath.",
+        "ref": "Proverbs 15:1"
+      },
+      {
+        "text": "Be still, and know that I am God.",
+        "ref": "Psalm 46:10"
+      },
+      {
+        "text": "Thy word is a lamp unto my feet, and a light unto my path.",
+        "ref": "Psalm 119:105"
+      },
+      {
+        "text": "He hath made every thing beautiful in his time.",
+        "ref": "Ecclesiastes 3:11"
+      },
+      {
+        "text": "For where two or three are gathered together in my name, there am I.",
+        "ref": "Matthew 18:20"
+      },
+      {
+        "text": "The Lord is nigh unto all them that call upon him.",
+        "ref": "Psalm 145:18"
+      },
+      {
+        "text": "Blessed are the peacemakers: for they shall be called the children of God.",
+        "ref": "Matthew 5:9"
+      },
+      {
+        "text": "O give thanks unto the Lord; for he is good.",
+        "ref": "Psalm 107:1"
+      },
+      {
+        "text": "The Lord is my light and my salvation; whom shall I fear?",
+        "ref": "Psalm 27:1"
+      },
+      {
+        "text": "And we know that all things work together for good to them that love God.",
+        "ref": "Romans 8:28"
+      },
+      {
+        "text": "If God be for us, who can be against us?",
+        "ref": "Romans 8:31"
+      },
+      {
+        "text": "Being confident of this very thing, that he which hath begun a good work in you will perform it.",
+        "ref": "Philippians 1:6"
+      },
+      {
+        "text": "The Lord thy God in the midst of thee is mighty.",
+        "ref": "Zephaniah 3:17"
+      },
+      {
+        "text": "For with God nothing shall be impossible.",
+        "ref": "Luke 1:37"
+      },
+      {
+        "text": "He giveth power to the faint; and to them that have no might he increaseth strength.",
+        "ref": "Isaiah 40:29"
+      },
+      {
+        "text": "Draw nigh to God, and he will draw nigh to you.",
+        "ref": "James 4:8"
+      },
+      {
+        "text": "Whatsoever ye do, do it heartily, as to the Lord.",
+        "ref": "Colossians 3:23"
+      },
+      {
+        "text": "Let us not be weary in well doing: for in due season we shall reap.",
+        "ref": "Galatians 6:9"
+      },
+      {
+        "text": "The Lord is gracious, and full of compassion.",
+        "ref": "Psalm 145:8"
+      },
+      {
+        "text": "Seek ye first the kingdom of God, and his righteousness.",
+        "ref": "Matthew 6:33"
+      },
+      {
+        "text": "Jesus said, Let the little children come unto me.",
+        "ref": "Matthew 19:14"
+      }
+    ]
+  }
+}
