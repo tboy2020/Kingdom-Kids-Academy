@@ -642,25 +642,68 @@ function selectAnswer(idx){
   el('p-next').style.display='block';
 }
 
+function generateHint(q){
+  // Auto-generate a hint based on the question pattern
+  var qt=q.q||'';
+  var ans=q.a;
+  // Addition: a + b
+  if(qt.indexOf('+')>=0){
+    var parts=qt.replace(/[^0-9+]/g,'').split('+');
+    if(parts.length>=2){
+      var a=parseInt(parts[0])||0, b=parseInt(parts[1])||0;
+      var big=Math.max(a,b), small=Math.min(a,b);
+      if(big+small<=10){
+        return 'Put the bigger number '+big+' in your head. Show '+small+' fingers. Count on from '+big+': '+
+          Array.from({length:small},function(_,i){return big+i+1;}).join(', ')+'! The answer is '+(big+small)+'!';
+      } else {
+        var need=10-big;
+        var left=small-need;
+        return big+' needs '+need+' to make 10. Take '+need+' from '+small+', leaving '+left+'. 10 plus '+left+' equals '+ans+'!';
+      }
+    }
+  }
+  // Subtraction: a - b
+  if(qt.indexOf('-')>=0||qt.indexOf('−')>=0){
+    var parts2=qt.replace(/[^0-9\-−]/g,'').split(/[-−]/);
+    if(parts2.length>=2){
+      var a2=parseInt(parts2[0])||0, b2=parseInt(parts2[1])||0;
+      return 'Put '+b2+' in your head. Count up to '+a2+' on your fingers. The number of fingers is the answer: '+(a2-b2)+'!';
+    }
+  }
+  // Multiplication
+  if(qt.indexOf('×')>=0||qt.indexOf('*')>=0){
+    return 'Think of groups! The answer is '+ans+'.';
+  }
+  // Division
+  if(qt.indexOf('÷')>=0||qt.indexOf('/')>=0){
+    return 'Think: what times the divisor gives you the big number? The answer is '+ans+'!';
+  }
+  // Default
+  return 'Think carefully! The answer is '+ans+'. You can do this!';
+}
+
 function useHint(){
   if(answered) return;
   var q=currentQuestions[currentQIdx];
-  if(!q.h) return;
   sessionHints++;
   sessionScore=Math.max(0,sessionScore-1);
   el('p-score').textContent='⭐ '+sessionScore;
   el('p-hint').style.display='none';
+
+  // Use stored hint or auto-generate one
+  var hintText = q.h || generateHint(q);
+  var hintStrategy = q.hs || 'Think Step by Step';
 
   var fb=el('p-feedback');
   fb.style.display='block';
   fb.className='feedback-box hint-fb show';
   el('fb-icon').textContent='💡';
   el('fb-msg').textContent='Here\'s a hint! (-1 point)';
-  el('fb-detail').textContent=q.h;
-  el('fb-verse').textContent='Strategy: '+q.hs;
+  el('fb-detail').textContent=hintText;
+  el('fb-verse').textContent='Strategy: '+hintStrategy;
 
   clearSpeech();
-  speak("Let me help you! "+q.h);
+  speak("Let me help you! "+hintText);
 }
 
 function nextQuestion(){
