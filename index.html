@@ -583,9 +583,12 @@ function loadPracticeQInner(q){
 
   // Options setup
 
-  // Speak question
-  clearSpeech();
-  speak(q.q);
+  // Speak question (only once)
+  if(!window._qSpoken || window._qSpoken !== currentQIdx){
+    window._qSpoken = currentQIdx;
+    clearSpeech();
+    speak(q.q);
+  }
 }
 
 function selectAnswer(idx){
@@ -642,6 +645,21 @@ function selectAnswer(idx){
 
 function generateHint(q){
   var qt=q.q||'',ans=q.a;
+  // Handle fill-in-blank: "6 + __ = 8" or "__ + 3 = 7"
+  if(qt.indexOf('__')>=0 || qt.indexOf('_')>=0){
+    var eqParts=qt.split('=');
+    if(eqParts.length===2){
+      var total=parseInt(eqParts[1])||0;
+      var leftSide=eqParts[0];
+      var nums=leftSide.match(/\d+/g)||[];
+      if(nums.length>=1){
+        var known=parseInt(nums[0]);
+        if(ans===0) return known+' plus what equals '+total+'? '+known+' is already '+total+'! You do not need to add anything. The missing number is 0!';
+        var seq=[];for(var i=1;i<=ans;i++)seq.push(known+i);
+        return known+' plus what equals '+total+'? Start at '+known+', count up to '+total+': '+seq.join(', ')+'. That is '+ans+' counts! The missing number is '+ans+'!';
+      }
+    }
+  }
   if(qt.indexOf('+')>=0){var parts=qt.replace(/[^0-9+]/g,'').split('+');if(parts.length>=2){var a=parseInt(parts[0])||0,b=parseInt(parts[1])||0,big=Math.max(a,b),small=Math.min(a,b);if(small===0)return a+' plus 0. Adding zero changes nothing! Answer: '+ans+'!';if(big+small<=10){var s=[];for(var i=1;i<=small;i++)s.push(big+i);return 'Put '+big+' in your head. Show '+small+' fingers. Count on: '+s.join(', ')+'! Answer: '+ans+'!';}else{var need=10-big,left=small-need;return big+' needs '+need+' to make 10. Take '+need+' from '+small+', leaving '+left+'. 10 plus '+left+' equals '+ans+'!';}}}
   if(qt.indexOf('-')>=0){var p2=qt.replace(/[^0-9\-]/g,'').split('-');if(p2.length>=2){var a2=parseInt(p2[0])||0,b2=parseInt(p2[1])||0;if(a2>b2){var s2=[];for(var i=1;i<=ans;i++)s2.push(b2+i);return 'Put '+b2+' in your head. Count up to '+a2+': '+s2.join(', ')+'. That is '+ans+'!';}}}
   return 'Think carefully! The answer is '+ans+'.';
@@ -667,6 +685,7 @@ function useHint(){
 }
 
 function nextQuestion(){
+  window._qSpoken=-1;
   currentQIdx++;
   loadPracticeQ();
 }
