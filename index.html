@@ -131,6 +131,27 @@ h2{font-family:'Fredoka One',cursive}
 .nl-arc.show{opacity:1}
 .nl-arc-label{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:9px;color:#ffd200;font-weight:800}
 .nl-counter{font-family:'Fredoka One',cursive;font-size:20px;color:#ffd200;text-align:center;margin-top:8px;min-height:28px}
+
+/* GROUPS VISUAL */
+.groups-wrap{padding:10px 0;margin:10px 0}
+.groups-pool{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:12px;min-height:30px;padding:8px;background:rgba(255,255,255,.05);border-radius:12px}
+.groups-pool .gi{font-size:16px;transition:opacity .3s}
+.groups-pool .gi.used{opacity:.15}
+.groups-labels{display:flex;justify-content:space-around;margin-bottom:6px}
+.groups-labels span{font-family:'Fredoka One',cursive;font-size:11px;color:#a5b4fc}
+.groups-row{display:flex;justify-content:space-around;gap:8px;margin-bottom:4px}
+.group-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 4px}
+.group-col .gi{font-size:16px;opacity:0;transition:opacity .3s}
+.group-col .gi.show{opacity:1}
+.groups-counter{font-family:'Fredoka One',cursive;font-size:18px;color:#ffd200;text-align:center;margin-top:8px}
+/* MULT ROWS */
+.mult-rows{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.mult-row{display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .4s}
+.mult-row.show{opacity:1}
+.mult-row .row-label{font-family:'Fredoka One',cursive;font-size:12px;color:#a5b4fc;width:50px;text-align:right}
+.mult-row .row-items{display:flex;gap:4px}
+.mult-row .gi{font-size:18px}
+.mult-row .row-total{font-family:'Fredoka One',cursive;font-size:13px;color:#ffd200;width:40px}
 </style>
 </head>
 <body>
@@ -1024,6 +1045,118 @@ function animateSkipCount(startVal, skipBy, numJumps, onDone){
     });
   }
   setTimeout(doSkip, 400);
+}
+
+
+// ═══ MULTIPLICATION GROUPS VISUAL ═══
+function showMultiplicationGroups(container, groups, perGroup, answer, onDone){
+  var html = '<div class="groups-wrap">';
+  html += '<div class="mult-rows" id="mult-rows">';
+  for(var g = 0; g < groups; g++){
+    html += '<div class="mult-row" id="mrow-'+g+'"><span class="row-label">Group '+(g+1)+':</span><span class="row-items">';
+    for(var i = 0; i < perGroup; i++){
+      html += '<span class="gi">⭐</span>';
+    }
+    html += '</span><span class="row-total" id="mtot-'+g+'"></span></div>';
+  }
+  html += '</div>';
+  html += '<div class="groups-counter" id="groups-counter"></div>';
+  html += '</div>';
+  container.innerHTML = html;
+
+  var rowIdx = 0;
+  var runTotal = 0;
+
+  function showNextRow(){
+    if(rowIdx >= groups){
+      el('groups-counter').textContent = '= ' + answer + '!';
+      speak('The answer is ' + answer + '!', onDone);
+      return;
+    }
+    var row = document.getElementById('mrow-' + rowIdx);
+    if(row) row.className = 'mult-row show';
+    runTotal += perGroup;
+    var tot = document.getElementById('mtot-' + rowIdx);
+    if(tot) tot.textContent = '= ' + runTotal;
+    el('groups-counter').textContent = runTotal;
+    rowIdx++;
+    if(rowIdx === 1){
+      speak(perGroup + '!', function(){ setTimeout(showNextRow, 300); });
+    } else {
+      speak(perGroup + ' more is ' + runTotal + '!', function(){ setTimeout(showNextRow, 300); });
+    }
+  }
+
+  speak(groups + ' groups of ' + perGroup + '. Watch!', function(){
+    setTimeout(showNextRow, 400);
+  });
+}
+
+// ═══ DIVISION DEALING VISUAL ═══
+function showDivisionDealing(container, total, numGroups, answer, onDone){
+  var html = '<div class="groups-wrap">';
+  // Pool of items to share
+  html += '<div class="groups-pool" id="div-pool">';
+  for(var i = 0; i < total; i++){
+    html += '<span class="gi" id="dpi-'+i+'">🔵</span>';
+  }
+  html += '</div>';
+  // Group labels
+  html += '<div class="groups-labels">';
+  for(var g = 0; g < numGroups; g++){
+    html += '<span>Group '+(g+1)+'</span>';
+  }
+  html += '</div>';
+  // Group columns
+  html += '<div class="groups-row" id="div-groups">';
+  for(var g = 0; g < numGroups; g++){
+    html += '<div class="group-col" id="dgrp-'+g+'">';
+    for(var r = 0; r < answer; r++){
+      html += '<span class="gi" id="dg-'+g+'-'+r+'">🔵</span>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  html += '<div class="groups-counter" id="groups-counter"></div>';
+  html += '</div>';
+  container.innerHTML = html;
+
+  var round = 0;
+  var poolUsed = 0;
+
+  function dealRound(){
+    if(round >= answer){
+      el('groups-counter').textContent = 'Each group has ' + answer + '!';
+      speak('Each group has ' + answer + '! ' + total + ' divided by ' + numGroups + ' equals ' + answer + '!', onDone);
+      return;
+    }
+
+    // Deal 1 to each group in this round
+    var groupIdx = 0;
+    function dealOne(){
+      if(groupIdx >= numGroups){
+        round++;
+        var left = total - (round * numGroups);
+        el('groups-counter').textContent = round + ' each (' + left + ' left)';
+        speak(round + ' each.', function(){ setTimeout(dealRound, 300); });
+        return;
+      }
+      // Hide from pool
+      var poolItem = document.getElementById('dpi-' + poolUsed);
+      if(poolItem) poolItem.className = 'gi used';
+      // Show in group
+      var grpItem = document.getElementById('dg-' + groupIdx + '-' + round);
+      if(grpItem) grpItem.className = 'gi show';
+      poolUsed++;
+      groupIdx++;
+      setTimeout(dealOne, 200);
+    }
+    dealOne();
+  }
+
+  speak(total + ' items to share among ' + numGroups + ' groups. Deal them out!', function(){
+    setTimeout(dealRound, 500);
+  });
 }
 
 // ═══ LEARN MODE ═══
