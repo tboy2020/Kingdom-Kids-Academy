@@ -120,13 +120,13 @@ h2{font-family:'Fredoka One',cursive}
 
 /* ANIMATED NUMBER LINE */
 .numline-wrap{width:100%;overflow-x:auto;padding:16px 0;margin:10px 0}
-.numline{display:flex;align-items:flex-end;justify-content:center;position:relative;min-height:80px;padding-top:40px}
+.numline{display:flex;align-items:flex-end;justify-content:flex-start;position:relative;min-height:80px;padding-top:40px;gap:0;width:max-content;margin:0 auto}
 .nl-num{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2}
-.nl-dot{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:11px;color:#888;transition:all .4s}
+.nl-dot{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:12px;color:#888;transition:all .4s;flex-shrink:0}
 .nl-dot.start{background:rgba(74,222,128,.25);border-color:#4ade80;color:#4ade80}
 .nl-dot.end{background:rgba(255,210,0,.25);border-color:#ffd200;color:#ffd200}
 .nl-dot.active{background:rgba(168,85,247,.25);border-color:#c084fc;color:#c084fc;transform:scale(1.15)}
-.nl-line{width:12px;height:2px;background:rgba(255,255,255,.15);flex-shrink:0;margin-bottom:13px}
+.nl-line{width:16px;height:2px;background:rgba(255,255,255,.15);flex-shrink:0;margin-bottom:15px}
 .nl-arc{position:absolute;width:36px;height:20px;border:2px solid #ffd200;border-bottom:none;border-radius:20px 20px 0 0;top:8px;opacity:0;transition:opacity .3s}
 .nl-arc.show{opacity:1}
 .nl-arc-label{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:9px;color:#ffd200;font-weight:800}
@@ -841,10 +841,7 @@ function resetAllProgress(){if(confirm('Reset ALL progress?')){lsSet('kka_progre
 
 // ═══ ANIMATED NUMBER LINE ═══
 function buildNumberLine(container, from, to, startNum, operation){
-  // from/to: range of number line (e.g., 0 to 15)
-  // startNum: where counting starts (the bigger number for addition)
-  // operation: 'add' or 'sub'
-  var html = '<div class="numline-wrap"><div class="numline" id="nl-inner">';
+  var html = '<div class="numline-wrap" id="nl-wrap"><div class="numline" id="nl-inner">';
   for(var i = from; i <= to; i++){
     if(i > from) html += '<div class="nl-line"></div>';
     var cls = 'nl-dot';
@@ -853,6 +850,15 @@ function buildNumberLine(container, from, to, startNum, operation){
   }
   html += '</div><div class="nl-counter" id="nl-counter"></div></div>';
   container.innerHTML = html;
+  // Auto-scroll to start position
+  setTimeout(function(){
+    var startDot = document.getElementById('nld-' + startNum);
+    var wrap = document.getElementById('nl-wrap');
+    if(startDot && wrap){
+      var scrollTo = startDot.offsetLeft - (wrap.offsetWidth / 2) + 16;
+      wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
+    }
+  }, 200);
 }
 
 function animateJumps(startVal, count, direction, onDone){
@@ -876,7 +882,15 @@ function animateJumps(startVal, count, direction, onDone){
     var nextVal = current + direction;
     // Highlight current dot
     var nextDot = document.getElementById('nld-' + nextVal);
-    if(nextDot){ nextDot.className = 'nl-dot active'; }
+    if(nextDot){
+      nextDot.className = 'nl-dot active';
+      // Auto-scroll to keep active dot visible
+      var wrap = document.getElementById('nl-wrap');
+      if(wrap){
+        var scrollTo = nextDot.offsetLeft - (wrap.offsetWidth / 2) + 16;
+        wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
+      }
+    }
     
     // Show arc between current and next
     // (visual only — the CSS handles the look via dot highlighting)
@@ -907,8 +921,9 @@ function showNumberLineLesson(container, equation, answer, type){
       var n2 = parseInt(parts[1]) || 0;
       var big = Math.max(n1, n2);
       var small = Math.min(n1, n2);
-      var lineEnd = Math.max(answer + 2, 10);
-      buildNumberLine(container, 0, Math.min(lineEnd, 20), big, 'add');
+      var lineStart = Math.max(0, big - 3);
+      var lineEnd = Math.min(answer + 3, 20);
+      buildNumberLine(container, lineStart, lineEnd, big, 'add');
       speak(big + ' in my head. Count on ' + small + '.', function(){
         animateJumps(big, small, 1, function(){
           speak('The answer is ' + answer + '!');
@@ -921,8 +936,9 @@ function showNumberLineLesson(container, equation, answer, type){
     if(parts2.length >= 2){
       var big2 = parseInt(parts2[0]) || 0;
       var small2 = parseInt(parts2[1]) || 0;
-      var lineEnd2 = Math.max(big2 + 2, 10);
-      buildNumberLine(container, 0, Math.min(lineEnd2, 20), small2, 'sub');
+      var lineStart2 = Math.max(0, small2 - 2);
+      var lineEnd2 = Math.min(big2 + 2, 20);
+      buildNumberLine(container, lineStart2, lineEnd2, small2, 'sub');
       speak('Put ' + small2 + ' in my head. Count up to ' + big2 + '.', function(){
         animateJumps(small2, answer, 1, function(){
           speak('That is ' + answer + ' jumps! The answer is ' + answer + '!');
@@ -965,6 +981,13 @@ function animateSkipCount(startVal, skipBy, numJumps, onDone){
       var dot = document.getElementById('nld-' + i);
       if(dot) dot.className = 'nl-dot active';
     }
+    // Scroll to latest position
+    var lastDot = document.getElementById('nld-' + nextVal);
+    var wrap = document.getElementById('nl-wrap');
+    if(lastDot && wrap){
+      var scrollTo = lastDot.offsetLeft - (wrap.offsetWidth / 2) + 16;
+      wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
+    }
     jumpsDone++;
     current = nextVal;
     el('nl-counter').textContent = current + ' (' + jumpsDone + ' group' + (jumpsDone > 1 ? 's' : '') + ')';
@@ -985,8 +1008,8 @@ var LESSON_TEMPLATES = {
   'addition': [
     {title:'What is Addition?', eq:'', explain:'Addition means putting numbers TOGETHER! When you see the plus sign, it means combine the groups.', result:''},
     {title:'The Count On Strategy', eq:'', explain:'Here is the trick: Put the BIGGER number in your head. Then count on the smaller number. Watch the number line!', result:''},
-    {title:'Watch Me!', eq:'5 + 3', explain:'Watch the number line! Start at 5, count on 3 jumps.', result:''},
-    {title:'Your Turn — Think Along!', eq:'7 + 4', explain:'Now you try! 7 is bigger. Watch the jumps on the number line.', result:''},
+    {title:'Watch Me!', eq:'8 + 5', explain:'Watch the number line! Start at 8, count on 5 jumps.', result:''},
+    {title:'Your Turn — Think Along!', eq:'7 + 9', explain:'9 is bigger! Watch: start at 9, count on 7 jumps.', result:''},
     {title:'One More Example!', eq:'9 + 6', explain:'9 is bigger. Watch: start at 9, count on 6 jumps!', result:''},
     {title:'You Got This!', eq:'', explain:'Remember: BIGGER number in your head, count on with your fingers or the number line! Now you are ready to practice!', result:'🌟 Great job! 🌟'}
   ],
