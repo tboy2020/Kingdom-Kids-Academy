@@ -1001,6 +1001,9 @@ function animateSkipCount(startVal, skipBy, numJumps, onDone){
     if(jumpsDone >= numJumps){
       var finalDot = document.getElementById('nld-' + current);
       if(finalDot) finalDot.className = 'nl-dot end';
+      // Scroll to midpoint so start and answer both visible
+      var midNum = Math.round((startVal + current) / 2);
+      smoothScrollNL('nld-' + midNum);
       el('nl-counter').textContent = '= ' + current + '!';
       if(onDone) setTimeout(onDone, 600);
       return;
