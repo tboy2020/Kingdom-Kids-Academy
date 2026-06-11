@@ -268,6 +268,38 @@ h2{font-family:'Fredoka One',cursive}
   </div>
 </div>
 
+
+<!-- SCREEN: UNIFIED DASHBOARD -->
+<div class="screen" id="s-dashboard">
+  <div class="nav">
+    <button class="nav-back" onclick="showTopics()">← Back</button>
+    <div class="nav-title">📊 Dashboard</div>
+    <span></span>
+  </div>
+  <div class="wrap">
+    <div style="text-align:center;margin:10px 0">
+      <div style="font-size:40px">📊</div>
+      <h2 style="color:#ffd200;font-size:18px" id="dash-name">Progress Dashboard</h2>
+      <p style="font-size:12px;color:#888">All your learning in one place</p>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:6px;margin:12px 0">
+      <button class="nav-back" style="flex:1;text-align:center;font-size:12px" id="dt-practice" onclick="showDashTab('practice')">✏️ Practice</button>
+      <button class="nav-back" style="flex:1;text-align:center;font-size:12px;opacity:.5" id="dt-compete" onclick="showDashTab('compete')">⚔️ Compete</button>
+      <button class="nav-back" style="flex:1;text-align:center;font-size:12px;opacity:.5" id="dt-overall" onclick="showDashTab('overall')">🏆 Overall</button>
+    </div>
+
+    <div id="dash-content"></div>
+
+    <!-- Links -->
+    <div style="margin-top:20px;display:flex;gap:8px">
+      <a href="https://tboy2020.github.io/Kingdom-Math/" style="flex:1;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;font-size:12px;color:#aaa;text-decoration:none;font-family:Nunito,sans-serif;font-weight:700">🏠 Math Hub</a>
+      <a href="https://tboy2020.github.io/Kingdom-Math/dashboard/" style="flex:1;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;font-size:12px;color:#aaa;text-decoration:none;font-family:Nunito,sans-serif;font-weight:700">📋 Competition Dashboard</a>
+    </div>
+  </div>
+</div>
+
 <!-- SCREEN: PRACTICE -->
 <div class="screen" id="s-practice">
   <div class="nav">
@@ -1455,13 +1487,171 @@ function startPracticeFromLearn(){
 }
 
 function updateBottomNav(active){
-  var tabs = ['learn','practice','compete','hub'];
+  var tabs = ['learn','practice','compete','dashboard'];
   tabs.forEach(function(t){
     var el2 = document.getElementById('bn-'+t);
     if(el2) el2.className = (t===active) ? 'active' : '';
   });
 }
 
+
+
+// ═══ UNIFIED DASHBOARD ═══
+function showDashboard(){
+  if(!profile){profile=lsGet('kka_profile');if(!profile){show('s-welcome');return;}}
+  el('dash-name').textContent = profile.name + "'s Progress";
+  updateBottomNav('dashboard');
+  showDashTab('practice');
+  show('s-dashboard');
+}
+
+function showDashTab(tab){
+  el('dt-practice').style.opacity = tab==='practice'?1:.5;
+  el('dt-compete').style.opacity = tab==='compete'?1:.5;
+  el('dt-overall').style.opacity = tab==='overall'?1:.5;
+
+  var container = el('dash-content');
+  if(tab==='practice') renderPracticeDash(container);
+  else if(tab==='compete') renderCompeteDash(container);
+  else renderOverallDash(container);
+}
+
+function renderPracticeDash(container){
+  var prog = getProgress();
+  var topics = getTopicsForGrade();
+  var html = '';
+  var totalC=0, totalW=0, totalS=0;
+
+  topics.forEach(function(t){
+    var tp = prog[t.id];
+    if(!tp || !tp.sessions) return;
+    totalC += tp.totalCorrect;
+    totalW += tp.totalWrong;
+    totalS += tp.sessions;
+    var totalQ = 0;
+    t.subs.forEach(function(s){ totalQ += s.q.length; });
+    var pct = Math.min(100, Math.round(tp.totalCorrect / Math.max(1, totalQ) * 100));
+    var icon = TOPIC_ICONS[t.id] || '';
+
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    html += '<span style="font-size:20px">' + icon + '</span>';
+    html += '<div style="flex:1">';
+    html += '<div style="font-size:13px;color:#fff;font-weight:700">' + t.name + '</div>';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-top:3px">';
+    html += '<div style="flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:4px"></div></div>';
+    html += '<span style="font-size:11px;color:#4ade80;font-weight:800">' + tp.totalCorrect + '✓</span>';
+    html += '<span style="font-size:11px;color:#f87171">' + tp.totalWrong + '✗</span>';
+    html += '</div>';
+    html += '<div style="font-size:10px;color:#666;margin-top:2px">' + tp.sessions + ' session' + (tp.sessions>1?'s':'') + ' · Best: ' + tp.bestScore + 'pts</div>';
+    html += '</div></div>';
+  });
+
+  if(totalS > 0){
+    var summary = '<div style="background:rgba(255,210,0,.08);border:1px solid rgba(255,210,0,.2);border-radius:12px;padding:12px;margin-bottom:14px">';
+    summary += '<div style="display:flex;justify-content:space-around;text-align:center">';
+    summary += '<div><div style="font-family:Fredoka One,cursive;font-size:22px;color:#4ade80">' + totalC + '</div><div style="font-size:10px;color:#888">CORRECT</div></div>';
+    summary += '<div><div style="font-family:Fredoka One,cursive;font-size:22px;color:#f87171">' + totalW + '</div><div style="font-size:10px;color:#888">WRONG</div></div>';
+    summary += '<div><div style="font-family:Fredoka One,cursive;font-size:22px;color:#ffd200">' + totalS + '</div><div style="font-size:10px;color:#888">SESSIONS</div></div>';
+    summary += '</div></div>';
+    html = summary + html;
+  } else {
+    html = '<div style="text-align:center;color:#666;padding:30px;font-size:14px">No practice sessions yet.<br><br>Tap ✏️ Practice to start learning!</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function renderCompeteDash(container){
+  // Read Competition data from its localStorage key
+  var compData = lsGet('kk_comp_dashboard');
+  if(!compData || !compData.children || Object.keys(compData.children).length === 0){
+    container.innerHTML = '<div style="text-align:center;color:#666;padding:30px;font-size:14px">No competition games yet.<br><br>Tap ⚔️ Compete to play!</div>';
+    return;
+  }
+
+  var html = '';
+  var children = compData.children;
+  Object.keys(children).forEach(function(name){
+    var c = children[name];
+    var icon = c.grade === 'K' ? '⭐' : '🏆';
+    html += '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px;margin-bottom:10px">';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    html += '<span style="font-size:28px">' + icon + '</span>';
+    html += '<div><div style="font-family:Fredoka One,cursive;font-size:16px;color:#fff">' + name + '</div>';
+    html += '<div style="font-size:11px;color:#888">' + (c.grade||'') + ' · ' + (c.gamesPlayed||0) + ' game' + ((c.gamesPlayed||0)!==1?'s':'') + '</div></div></div>';
+    html += '<div style="display:flex;justify-content:space-around;text-align:center">';
+    html += '<div><div style="font-family:Fredoka One,cursive;font-size:20px;color:#4ade80">' + (c.totalCorrect||0) + '</div><div style="font-size:10px;color:#888">CORRECT</div></div>';
+    html += '<div><div style="font-family:Fredoka One,cursive;font-size:20px;color:#f87171">' + (c.totalWrong||0) + '</div><div style="font-size:10px;color:#888">WRONG</div></div>';
+    html += '<div><div style="font-family:Fredoka One,cursive;font-size:20px;color:#ffd200">' + (c.totalCorrect||0) + '/' + ((c.totalCorrect||0)+(c.totalWrong||0)) + '</div><div style="font-size:10px;color:#888">SCORE</div></div>';
+    html += '</div>';
+    // Topics
+    if(c.topics && Object.keys(c.topics).length > 0){
+      html += '<div style="margin-top:8px;font-size:11px;color:#a5b4fc;font-weight:800">TOPICS:</div>';
+      Object.keys(c.topics).forEach(function(topic){
+        var tp = c.topics[topic];
+        html += '<div style="display:flex;justify-content:space-between;font-size:12px;color:#ccc;padding:2px 0">';
+        html += '<span>' + topic + '</span><span style="color:#4ade80">' + (tp.correct||0) + '✓</span></div>';
+      });
+    }
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function renderOverallDash(container){
+  var prog = getProgress();
+  var compData = lsGet('kk_comp_dashboard');
+  var pracC=0, pracW=0, pracS=0;
+  var compC=0, compW=0, compG=0;
+
+  var topics = getTopicsForGrade();
+  topics.forEach(function(t){
+    var tp = prog[t.id];
+    if(tp && tp.sessions){
+      pracC += tp.totalCorrect;
+      pracW += tp.totalWrong;
+      pracS += tp.sessions;
+    }
+  });
+
+  if(compData && compData.children){
+    Object.keys(compData.children).forEach(function(name){
+      var c = compData.children[name];
+      compC += c.totalCorrect || 0;
+      compW += c.totalWrong || 0;
+      compG += c.gamesPlayed || 0;
+    });
+  }
+
+  var totalC = pracC + compC;
+  var totalW = pracW + compW;
+  var accuracy = totalC + totalW > 0 ? Math.round(totalC / (totalC + totalW) * 100) : 0;
+
+  var html = '<div style="background:linear-gradient(135deg,rgba(255,210,0,.1),rgba(168,85,247,.1));border:2px solid rgba(255,210,0,.25);border-radius:16px;padding:18px;text-align:center;margin-bottom:14px">';
+  html += '<div style="font-family:Fredoka One,cursive;font-size:36px;color:#ffd200">' + totalC + '</div>';
+  html += '<div style="font-size:13px;color:#aaa">Total Correct Answers</div>';
+  html += '<div style="display:flex;justify-content:space-around;margin-top:14px">';
+  html += '<div><div style="font-family:Fredoka One,cursive;font-size:18px;color:#4ade80">' + accuracy + '%</div><div style="font-size:10px;color:#888">ACCURACY</div></div>';
+  html += '<div><div style="font-family:Fredoka One,cursive;font-size:18px;color:#c084fc">' + pracS + '</div><div style="font-size:10px;color:#888">PRACTICE</div></div>';
+  html += '<div><div style="font-family:Fredoka One,cursive;font-size:18px;color:#fbbf24">' + compG + '</div><div style="font-size:10px;color:#888">COMPETITIONS</div></div>';
+  html += '</div></div>';
+
+  html += '<div style="display:flex;gap:8px;margin-bottom:12px">';
+  html += '<div style="flex:1;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:12px;padding:12px;text-align:center">';
+  html += '<div style="font-size:11px;color:#4ade80;font-weight:800">✏️ PRACTICE</div>';
+  html += '<div style="font-family:Fredoka One,cursive;font-size:20px;color:#fff;margin-top:4px">' + pracC + ' / ' + (pracC+pracW) + '</div></div>';
+  html += '<div style="flex:1;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:12px;text-align:center">';
+  html += '<div style="font-size:11px;color:#fbbf24;font-weight:800">⚔️ COMPETE</div>';
+  html += '<div style="font-family:Fredoka One,cursive;font-size:20px;color:#fff;margin-top:4px">' + compC + ' / ' + (compC+compW) + '</div></div>';
+  html += '</div>';
+
+  if(totalC === 0 && totalW === 0){
+    html = '<div style="text-align:center;color:#666;padding:30px;font-size:14px">No activity yet.<br><br>Start with 📚 Learn, then ✏️ Practice!</div>';
+  }
+
+  container.innerHTML = html;
+}
 
 // ═══ BOOT ═══
 profile=lsGet('kka_profile');
@@ -1478,7 +1668,7 @@ if(profile&&profile.name&&profile.grade){
   <a onclick="showLearnTopics()" id="bn-learn"><span class="bn-icon">📚</span>Learn</a>
   <a onclick="showTopics()" id="bn-practice" class="active"><span class="bn-icon">✏️</span>Practice</a>
   <a href="https://tboy2020.github.io/Kingdom-Math/competition/" id="bn-compete"><span class="bn-icon">⚔️</span>Compete</a>
-  <a href="https://tboy2020.github.io/Kingdom-Math/" id="bn-hub"><span class="bn-icon">🏠</span>Hub</a>
+  <a onclick="showDashboard()" id="bn-dashboard"><span class="bn-icon">📊</span>Dashboard</a>
 </div>
 </body>
 </html>
