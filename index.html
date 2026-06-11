@@ -269,37 +269,6 @@ h2{font-family:'Fredoka One',cursive}
 </div>
 
 
-<!-- SCREEN: UNIFIED DASHBOARD -->
-<div class="screen" id="s-dashboard">
-  <div class="nav">
-    <button class="nav-back" onclick="showTopics()">← Back</button>
-    <div class="nav-title">📊 Dashboard</div>
-    <span></span>
-  </div>
-  <div class="wrap">
-    <div style="text-align:center;margin:10px 0">
-      <div style="font-size:40px">📊</div>
-      <h2 style="color:#ffd200;font-size:18px" id="dash-name">Progress Dashboard</h2>
-      <p style="font-size:12px;color:#888">All your learning in one place</p>
-    </div>
-
-    <!-- Tabs -->
-    <div style="display:flex;gap:6px;margin:12px 0">
-      <button class="nav-back" style="flex:1;text-align:center;font-size:12px" id="dt-practice" onclick="showDashTab('practice')">✏️ Practice</button>
-      <button class="nav-back" style="flex:1;text-align:center;font-size:12px;opacity:.5" id="dt-compete" onclick="showDashTab('compete')">⚔️ Compete</button>
-      <button class="nav-back" style="flex:1;text-align:center;font-size:12px;opacity:.5" id="dt-overall" onclick="showDashTab('overall')">🏆 Overall</button>
-    </div>
-
-    <div id="dash-content"></div>
-
-    <!-- Links -->
-    <div style="margin-top:20px;display:flex;gap:8px">
-      <a href="https://tboy2020.github.io/Kingdom-Math/" style="flex:1;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;font-size:12px;color:#aaa;text-decoration:none;font-family:Nunito,sans-serif;font-weight:700">🏠 Math Hub</a>
-      <a href="https://tboy2020.github.io/Kingdom-Math/dashboard/" style="flex:1;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px;font-size:12px;color:#aaa;text-decoration:none;font-family:Nunito,sans-serif;font-weight:700">📋 Competition Dashboard</a>
-    </div>
-  </div>
-</div>
-
 <!-- SCREEN: PRACTICE -->
 <div class="screen" id="s-practice">
   <div class="nav">
@@ -1668,7 +1637,7 @@ if(profile&&profile.name&&profile.grade){
   <a onclick="showLearnTopics()" id="bn-learn"><span class="bn-icon">📚</span>Learn</a>
   <a onclick="showTopics()" id="bn-practice" class="active"><span class="bn-icon">✏️</span>Practice</a>
   <a href="https://tboy2020.github.io/Kingdom-Math/competition/" id="bn-compete"><span class="bn-icon">⚔️</span>Compete</a>
-  <a onclick="showDashboard()" id="bn-dashboard"><span class="bn-icon">📊</span>Dashboard</a>
+  <a href="https://tboy2020.github.io/Kingdom-Math/dashboard/" id="bn-dashboard"><span class="bn-icon">📊</span>Dashboard</a>
 </div>
 </body>
 </html>
