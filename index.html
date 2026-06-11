@@ -861,16 +861,14 @@ function buildNumberLine(container, from, to, startNum, operation){
   }, 200);
 }
 
-function animateJumps(startVal, count, direction, onDone){
-  // direction: 1 for counting up, -1 for counting down
-  // Animates `count` jumps from startVal
+function animateJumps(startVal, count, direction, onDone, mode){
+  // mode: 'add' shows landing position, 'sub' shows jump count
   var jumpsDone = 0;
   var current = startVal;
   el('nl-counter').textContent = '';
 
   function doJump(){
     if(jumpsDone >= count){
-      // Highlight final number as answer
       var finalNum = startVal + (count * direction);
       var finalDot = document.getElementById('nld-' + finalNum);
       if(finalDot){
@@ -881,7 +879,12 @@ function animateJumps(startVal, count, direction, onDone){
           wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
         }
       }
-      el('nl-counter').textContent = '= ' + (count) + (count === 1 ? ' jump' : ' jumps') + '!';
+      // Addition: show the answer (landing position). Subtraction: show jump count
+      if(mode === 'sub'){
+        el('nl-counter').textContent = '= ' + count + ' jumps = ' + count + '!';
+      } else {
+        el('nl-counter').textContent = '= ' + finalNum + '!';
+      }
       if(onDone) setTimeout(onDone, 600);
       return;
     }
@@ -933,8 +936,8 @@ function showNumberLineLesson(container, equation, answer, type){
       buildNumberLine(container, lineStart, lineEnd, big, 'add');
       speak(big + ' in my head. Count on ' + small + '.', function(){
         animateJumps(big, small, 1, function(){
-          speak('The answer is ' + answer + '!');
-        });
+          speak('We land on ' + answer + '! The answer is ' + answer + '!');
+        }, 'add');
       });
     }
   } else if(type === 'sub'){
@@ -949,7 +952,7 @@ function showNumberLineLesson(container, equation, answer, type){
       speak('Put ' + small2 + ' in my head. Count up to ' + big2 + '.', function(){
         animateJumps(small2, answer, 1, function(){
           speak('That is ' + answer + ' jumps! The answer is ' + answer + '!');
-        });
+        }, 'sub');
       });
     }
   } else if(type === 'multiply'){
