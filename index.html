@@ -117,6 +117,20 @@ h2{font-family:'Fredoka One',cursive}
 .bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 10px;text-decoration:none;font-size:10px;font-weight:800;color:#666;font-family:'Nunito',sans-serif;transition:color .2s}
 .bottom-nav a.active{color:#ffd200}
 .bottom-nav a .bn-icon{font-size:20px}
+
+/* ANIMATED NUMBER LINE */
+.numline-wrap{width:100%;overflow-x:auto;padding:16px 0;margin:10px 0}
+.numline{display:flex;align-items:flex-end;justify-content:center;position:relative;min-height:80px;padding-top:40px}
+.nl-num{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2}
+.nl-dot{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:11px;color:#888;transition:all .4s}
+.nl-dot.start{background:rgba(74,222,128,.25);border-color:#4ade80;color:#4ade80}
+.nl-dot.end{background:rgba(255,210,0,.25);border-color:#ffd200;color:#ffd200}
+.nl-dot.active{background:rgba(168,85,247,.25);border-color:#c084fc;color:#c084fc;transform:scale(1.15)}
+.nl-line{width:12px;height:2px;background:rgba(255,255,255,.15);flex-shrink:0;margin-bottom:13px}
+.nl-arc{position:absolute;width:36px;height:20px;border:2px solid #ffd200;border-bottom:none;border-radius:20px 20px 0 0;top:8px;opacity:0;transition:opacity .3s}
+.nl-arc.show{opacity:1}
+.nl-arc-label{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:9px;color:#ffd200;font-weight:800}
+.nl-counter{font-family:'Fredoka One',cursive;font-size:20px;color:#ffd200;text-align:center;margin-top:8px;min-height:28px}
 </style>
 </head>
 <body>
@@ -214,6 +228,7 @@ h2{font-family:'Fredoka One',cursive}
     <div style="background:rgba(255,255,255,.06);border:2px solid rgba(108,99,255,.3);border-radius:20px;padding:20px 16px;min-height:200px;margin-bottom:12px">
       <div style="font-size:12px;color:#a5b4fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:800" id="ll-step-title">Introduction</div>
       <div style="font-family:'Fredoka One',cursive;font-size:28px;color:#fff;text-align:center;margin:16px 0;min-height:40px" id="ll-equation"></div>
+      <div id="ll-visual" style="min-height:10px"></div>
       <div style="font-size:15px;color:#ddd;line-height:1.7;text-align:center" id="ll-explanation"></div>
       <div style="font-family:'Fredoka One',cursive;font-size:18px;color:#4ade80;text-align:center;margin-top:12px;min-height:24px" id="ll-result"></div>
     </div>
@@ -823,6 +838,143 @@ function renderParentResets(){var l=el('parent-reset-list');if(!l)return;l.inner
 function resetAllProgress(){if(confirm('Reset ALL progress?')){lsSet('kka_progress',{});renderParentProgress();renderParentResets();}}
 
 
+
+// ═══ ANIMATED NUMBER LINE ═══
+function buildNumberLine(container, from, to, startNum, operation){
+  // from/to: range of number line (e.g., 0 to 15)
+  // startNum: where counting starts (the bigger number for addition)
+  // operation: 'add' or 'sub'
+  var html = '<div class="numline-wrap"><div class="numline" id="nl-inner">';
+  for(var i = from; i <= to; i++){
+    if(i > from) html += '<div class="nl-line"></div>';
+    var cls = 'nl-dot';
+    if(i === startNum) cls += ' start';
+    html += '<div class="nl-num"><div class="' + cls + '" id="nld-' + i + '">' + i + '</div></div>';
+  }
+  html += '</div><div class="nl-counter" id="nl-counter"></div></div>';
+  container.innerHTML = html;
+}
+
+function animateJumps(startVal, count, direction, onDone){
+  // direction: 1 for counting up, -1 for counting down
+  // Animates `count` jumps from startVal
+  var jumpsDone = 0;
+  var current = startVal;
+  el('nl-counter').textContent = '';
+
+  function doJump(){
+    if(jumpsDone >= count){
+      // Highlight final number as answer
+      var finalNum = startVal + (count * direction);
+      var finalDot = document.getElementById('nld-' + finalNum);
+      if(finalDot){ finalDot.className = 'nl-dot end'; }
+      el('nl-counter').textContent = '= ' + (count) + (count === 1 ? ' jump' : ' jumps') + '!';
+      if(onDone) setTimeout(onDone, 600);
+      return;
+    }
+
+    var nextVal = current + direction;
+    // Highlight current dot
+    var nextDot = document.getElementById('nld-' + nextVal);
+    if(nextDot){ nextDot.className = 'nl-dot active'; }
+    
+    // Show arc between current and next
+    // (visual only — the CSS handles the look via dot highlighting)
+    jumpsDone++;
+    current = nextVal;
+    
+    // Speak the number
+    el('nl-counter').textContent = nextVal;
+    speak(String(nextVal), function(){
+      // Small pause then next jump
+      setTimeout(doJump, 200);
+    });
+  }
+
+  // Start after a brief pause
+  setTimeout(doJump, 400);
+}
+
+function showNumberLineLesson(container, equation, answer, type){
+  // Parse equation and show animated number line
+  // type: 'add', 'sub', 'multiply'
+  
+  if(type === 'add'){
+    // e.g., "5 + 3 = 8" → start at 5, jump 3 times forward
+    var parts = equation.replace(/\s/g,'').split('+');
+    if(parts.length >= 2){
+      var n1 = parseInt(parts[0]) || 0;
+      var n2 = parseInt(parts[1]) || 0;
+      var big = Math.max(n1, n2);
+      var small = Math.min(n1, n2);
+      var lineEnd = Math.max(answer + 2, 10);
+      buildNumberLine(container, 0, Math.min(lineEnd, 20), big, 'add');
+      speak(big + ' in my head. Count on ' + small + '.', function(){
+        animateJumps(big, small, 1, function(){
+          speak('The answer is ' + answer + '!');
+        });
+      });
+    }
+  } else if(type === 'sub'){
+    // e.g., "9 - 4 = 5" → start at 4, jump up to 9
+    var parts2 = equation.replace(/\s/g,'').split('-');
+    if(parts2.length >= 2){
+      var big2 = parseInt(parts2[0]) || 0;
+      var small2 = parseInt(parts2[1]) || 0;
+      var lineEnd2 = Math.max(big2 + 2, 10);
+      buildNumberLine(container, 0, Math.min(lineEnd2, 20), small2, 'sub');
+      speak('Put ' + small2 + ' in my head. Count up to ' + big2 + '.', function(){
+        animateJumps(small2, answer, 1, function(){
+          speak('That is ' + answer + ' jumps! The answer is ' + answer + '!');
+        });
+      });
+    }
+  } else if(type === 'multiply'){
+    // e.g., "3 × 4" → skip count by 4, three times: 4, 8, 12
+    var parts3 = equation.replace(/\s/g,'').split('×');
+    if(parts3.length >= 2){
+      var groups = parseInt(parts3[0]) || 0;
+      var per = parseInt(parts3[1]) || 0;
+      var lineEnd3 = answer + 2;
+      buildNumberLine(container, 0, Math.min(lineEnd3, 30), 0, 'multiply');
+      speak(groups + ' groups of ' + per + '. Skip count by ' + per + '.', function(){
+        animateSkipCount(0, per, groups, function(){
+          speak('The answer is ' + answer + '!');
+        });
+      });
+    }
+  }
+}
+
+function animateSkipCount(startVal, skipBy, numJumps, onDone){
+  var jumpsDone = 0;
+  var current = startVal;
+  el('nl-counter').textContent = '';
+
+  function doSkip(){
+    if(jumpsDone >= numJumps){
+      var finalDot = document.getElementById('nld-' + current);
+      if(finalDot) finalDot.className = 'nl-dot end';
+      el('nl-counter').textContent = '= ' + current + '!';
+      if(onDone) setTimeout(onDone, 600);
+      return;
+    }
+    var nextVal = current + skipBy;
+    // Highlight all dots in this jump
+    for(var i = current + 1; i <= nextVal; i++){
+      var dot = document.getElementById('nld-' + i);
+      if(dot) dot.className = 'nl-dot active';
+    }
+    jumpsDone++;
+    current = nextVal;
+    el('nl-counter').textContent = current + ' (' + jumpsDone + ' group' + (jumpsDone > 1 ? 's' : '') + ')';
+    speak(String(current), function(){
+      setTimeout(doSkip, 300);
+    });
+  }
+  setTimeout(doSkip, 400);
+}
+
 // ═══ LEARN MODE ═══
 var learnTopic = null;
 var learnSteps = [];
@@ -831,28 +983,28 @@ var learnIdx = 0;
 // Lesson templates per topic type
 var LESSON_TEMPLATES = {
   'addition': [
-    {title:'What is Addition?', eq:'2 + 3', explain:'Addition means putting numbers TOGETHER! When you see the plus sign (+), it means combine the groups.', result:''},
-    {title:'The Count On Strategy', eq:'5 + 3', explain:'Put the BIGGER number in your head. Show the smaller number on your fingers. Then count on!', result:''},
-    {title:'Watch Me!', eq:'5 + 3', explain:'5 is bigger. Put 5 in your head. Show 3 fingers. Count on from 5: 6, 7, 8!', result:'5 + 3 = 8 ✅'},
-    {title:'Your Turn — Think Along!', eq:'7 + 4', explain:'Which is bigger? 7! Put 7 in your head. Show 4 fingers. Count on from 7: 8, 9, 10, 11!', result:'7 + 4 = 11 ✅'},
-    {title:'One More Example!', eq:'9 + 6', explain:'9 is bigger. Put 9 in your head. Count on 6: 10, 11, 12, 13, 14, 15!', result:'9 + 6 = 15 ✅'},
-    {title:'You Got This!', eq:'', explain:'Remember: BIGGER number in your head, count on with your fingers! Now you are ready to practice!', result:'🌟 Great job! 🌟'}
+    {title:'What is Addition?', eq:'', explain:'Addition means putting numbers TOGETHER! When you see the plus sign, it means combine the groups.', result:''},
+    {title:'The Count On Strategy', eq:'', explain:'Here is the trick: Put the BIGGER number in your head. Then count on the smaller number. Watch the number line!', result:''},
+    {title:'Watch Me!', eq:'5 + 3', explain:'Watch the number line! Start at 5, count on 3 jumps.', result:''},
+    {title:'Your Turn — Think Along!', eq:'7 + 4', explain:'Now you try! 7 is bigger. Watch the jumps on the number line.', result:''},
+    {title:'One More Example!', eq:'9 + 6', explain:'9 is bigger. Watch: start at 9, count on 6 jumps!', result:''},
+    {title:'You Got This!', eq:'', explain:'Remember: BIGGER number in your head, count on with your fingers or the number line! Now you are ready to practice!', result:'🌟 Great job! 🌟'}
   ],
   'subtraction': [
-    {title:'What is Subtraction?', eq:'8 - 3', explain:'Subtraction means taking away, or finding the difference. The minus sign (−) means subtract.', result:''},
-    {title:'The Count Up Strategy', eq:'9 - 4', explain:'Put the SMALLER number in your head. Count UP to the bigger number on your fingers. The fingers you held up = the answer!', result:''},
-    {title:'Watch Me!', eq:'9 - 4', explain:'Put 4 in your head. Count up to 9: 5, 6, 7, 8, 9. That is 5 fingers!', result:'9 - 4 = 5 ✅'},
-    {title:'Your Turn!', eq:'12 - 7', explain:'Put 7 in your head. Count up to 12: 8, 9, 10, 11, 12. That is 5 fingers!', result:'12 - 7 = 5 ✅'},
-    {title:'One More!', eq:'15 - 9', explain:'Put 9 in your head. Count up to 15: 10, 11, 12, 13, 14, 15. That is 6!', result:'15 - 9 = 6 ✅'},
-    {title:'You Got This!', eq:'', explain:'Remember: smaller number in your head, count UP to the bigger number. The number of counts is your answer!', result:'🌟 Ready to practice! 🌟'}
+    {title:'What is Subtraction?', eq:'', explain:'Subtraction means taking away. The minus sign means subtract. But here is an easy trick to solve it!', result:''},
+    {title:'The Count Up Strategy', eq:'', explain:'Put the SMALLER number in your head. Count UP to the bigger number. The number of jumps is the answer! Watch the number line!', result:''},
+    {title:'Watch Me!', eq:'9 - 4', explain:'Watch! Start at 4, count up to 9. How many jumps?', result:''},
+    {title:'Your Turn!', eq:'12 - 7', explain:'Start at 7, count up to 12. Watch the number line!', result:''},
+    {title:'One More!', eq:'15 - 9', explain:'Start at 9, count up to 15. Count the jumps!', result:''},
+    {title:'You Got This!', eq:'', explain:'Remember: put the smaller number in your head, count UP. The jumps are your answer!', result:'🌟 Ready to practice! 🌟'}
   ],
   'multiplication': [
-    {title:'What is Multiplication?', eq:'3 × 4', explain:'Multiplication means GROUPS OF! 3 × 4 means 3 groups with 4 in each group.', result:''},
-    {title:'Count All!', eq:'3 × 4', explain:'Draw 3 groups of 4: ⭐⭐⭐⭐  ⭐⭐⭐⭐  ⭐⭐⭐⭐ Now count them ALL: 1, 2, 3... 12!', result:'3 × 4 = 12 ✅'},
-    {title:'Repeated Addition', eq:'3 × 4', explain:'Multiplication is FAST addition! 3 groups of 4 means: 4 + 4 + 4 = 12!', result:'4 + 4 + 4 = 12 ✅'},
-    {title:'Easy Tricks!', eq:'', explain:'× 1 = same number! × 2 = double it! × 5 = count by 5s! × 10 = add a zero!', result:'These tricks make it fast!'},
-    {title:'Break Apart for Big Numbers', eq:'7 × 6', explain:'Break 6 into 5 and 1. You know 7 × 5 = 35 and 7 × 1 = 7. Add them: 35 + 7 = 42!', result:'7 × 6 = 42 ✅'},
-    {title:'You Got This!', eq:'', explain:'Remember: multiplication is groups! Count them all, or use repeated addition. For big numbers, break apart!', result:'🌟 Ready to practice! 🌟'}
+    {title:'What is Multiplication?', eq:'', explain:'Multiplication means GROUPS OF! 3 times 4 means 3 groups with 4 in each group.', result:''},
+    {title:'Skip Count on the Number Line', eq:'', explain:'We can skip count on the number line! Jump by the group size and count how many jumps. Watch!', result:''},
+    {title:'Watch Me!', eq:'3 × 4', explain:'3 groups of 4. Watch the number line skip count by 4, three times!', result:''},
+    {title:'Your Turn!', eq:'4 × 3', explain:'4 groups of 3. Watch the skip counting!', result:''},
+    {title:'One More!', eq:'5 × 2', explain:'5 groups of 2. Skip count by 2, five times!', result:''},
+    {title:'You Got This!', eq:'', explain:'Remember: multiplication is groups! Skip count on the number line. For big numbers, break apart!', result:'🌟 Ready to practice! 🌟'}
   ],
   'division': [
     {title:'What is Division?', eq:'12 ÷ 3', explain:'Division means SHARING EQUALLY! 12 ÷ 3 means: share 12 items among 3 groups. How many in each?', result:''},
@@ -934,6 +1086,32 @@ function renderLearnStep(){
   el('ll-equation').textContent = step.eq || '';
   el('ll-explanation').textContent = step.explain;
   el('ll-result').textContent = step.result || '';
+  // Clear visual
+  el('ll-visual').innerHTML = '';
+  // Show animated number line for example steps
+  if(step.eq && (step.title.indexOf('Watch')>=0 || step.title.indexOf('Your Turn')>=0 || step.title.indexOf('One More')>=0)){
+    var vis = el('ll-visual');
+    var eq = step.eq;
+    if(eq.indexOf('+')>=0){
+      var ps=eq.replace(/\s/g,'').split('+');
+      var a=parseInt(ps[0])||0, b=parseInt(ps[1])||0;
+      // Delay so text appears first, then number line animates
+      setTimeout(function(){ showNumberLineLesson(vis, eq, a+b, 'add'); }, 800);
+      return; // don't speak text — number line speaks instead
+    }
+    if(eq.indexOf('-')>=0){
+      var ps2=eq.replace(/\s/g,'').split('-');
+      var a2=parseInt(ps2[0])||0, b2=parseInt(ps2[1])||0;
+      setTimeout(function(){ showNumberLineLesson(vis, eq, a2-b2, 'sub'); }, 800);
+      return;
+    }
+    if(eq.indexOf('×')>=0){
+      var ps3=eq.replace(/\s/g,'').split('×');
+      var a3=parseInt(ps3[0])||0, b3=parseInt(ps3[1])||0;
+      setTimeout(function(){ showNumberLineLesson(vis, eq, a3*b3, 'multiply'); }, 800);
+      return;
+    }
+  }
   el('ll-step-count').textContent = 'Step ' + (learnIdx+1) + ' of ' + learnSteps.length;
   el('ll-next-btn').textContent = learnIdx >= learnSteps.length-1 ? '✅ Done!' : 'Next →';
 
