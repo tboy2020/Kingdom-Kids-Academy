@@ -111,6 +111,12 @@ h2{font-family:'Fredoka One',cursive}
 
 /* REVIEW MODE */
 .review-tag{background:rgba(248,113,113,.15);color:#f87171;font-size:11px;padding:3px 8px;border-radius:8px;font-weight:800;display:inline-block;margin-bottom:8px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(10,10,30,.95);border-top:2px solid rgba(255,210,0,.2);z-index:400;backdrop-filter:blur(10px)}
+.bottom-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 10px;text-decoration:none;font-size:10px;font-weight:800;color:#666;font-family:'Nunito',sans-serif;transition:color .2s}
+.bottom-nav a.active{color:#ffd200}
+.bottom-nav a .bn-icon{font-size:20px}
 </style>
 </head>
 <body>
@@ -170,6 +176,59 @@ h2{font-family:'Fredoka One',cursive}
     <div style="margin:20px 0"><div style="font-size:13px;color:#f87171;font-weight:800;margin-bottom:8px">Reset Options</div><div id="parent-reset-list"></div>
     <button onclick="resetAllProgress()" style="width:100%;background:rgba(248,113,113,.12);border:2px solid rgba(248,113,113,.3);border-radius:14px;padding:12px;font-family:Fredoka One,cursive;font-size:14px;color:#f87171;cursor:pointer;margin-top:10px">Reset ALL Progress</button></div>
     <button onclick="showProfile()" style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:12px;font-family:Fredoka One,cursive;font-size:14px;color:#aaa;cursor:pointer;margin-top:8px">Change Profile</button>
+  </div>
+</div>
+
+
+<!-- SCREEN: LEARN TOPICS -->
+<div class="screen" id="s-learn-topics">
+  <div class="nav">
+    <div class="nav-title">📚 Learn</div>
+    <button class="nav-back" onclick="showTopics()">✏️ Practice</button>
+  </div>
+  <div class="wrap">
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-size:48px">📚</div>
+      <h2 style="color:#ffd200;font-size:20px">Learn Mode</h2>
+      <p style="font-size:12px;color:#888;margin-top:4px">Voice-guided lessons. Learn the strategy before practicing!</p>
+    </div>
+    <div id="learn-topic-grid" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+</div>
+
+<!-- SCREEN: LEARN LESSON -->
+<div class="screen" id="s-learn-lesson">
+  <div class="nav">
+    <button class="nav-back" onclick="showLearnTopics()">← Topics</button>
+    <div class="nav-title" id="ll-nav-title">📚 Learn</div>
+    <button class="nav-back" onclick="toggleVoice()">🔊</button>
+  </div>
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:12px">
+      <div style="font-size:40px" id="ll-icon">📚</div>
+      <h2 style="color:#ffd200;font-size:18px" id="ll-topic-name">Topic</h2>
+      <div style="font-size:12px;color:#888" id="ll-step-count">Step 1 of 5</div>
+    </div>
+
+    <!-- Lesson step card -->
+    <div style="background:rgba(255,255,255,.06);border:2px solid rgba(108,99,255,.3);border-radius:20px;padding:20px 16px;min-height:200px;margin-bottom:12px">
+      <div style="font-size:12px;color:#a5b4fc;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:800" id="ll-step-title">Introduction</div>
+      <div style="font-family:'Fredoka One',cursive;font-size:28px;color:#fff;text-align:center;margin:16px 0;min-height:40px" id="ll-equation"></div>
+      <div style="font-size:15px;color:#ddd;line-height:1.7;text-align:center" id="ll-explanation"></div>
+      <div style="font-family:'Fredoka One',cursive;font-size:18px;color:#4ade80;text-align:center;margin-top:12px;min-height:24px" id="ll-result"></div>
+    </div>
+
+    <!-- Progress dots -->
+    <div style="display:flex;justify-content:center;gap:6px;margin:8px 0" id="ll-dots"></div>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="next-btn" style="flex:1;font-size:14px;background:rgba(255,255,255,.1);color:#fff" onclick="learnPrev()">← Back</button>
+      <button class="next-btn" style="flex:1;font-size:14px" id="ll-next-btn" onclick="learnNext()">Next →</button>
+    </div>
+
+    <div style="text-align:center;margin-top:12px">
+      <button style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:20px;padding:8px 20px;font-size:13px;color:#4ade80;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700" onclick="startPracticeFromLearn()">✏️ Ready to Practice!</button>
+    </div>
   </div>
 </div>
 
@@ -418,6 +477,7 @@ function showProfile(){
   el('gb-2').className='grade-btn';
   el('w-start').disabled=true;
   show('s-welcome');
+  var bn=el('bottomNav');if(bn)bn.style.display='none';
 }
 
 // ═══ PROGRESS ═══
@@ -443,6 +503,7 @@ function getTopicsForGrade(){
   });
 }
 function showTopics(){
+  var bn=el('bottomNav');if(bn)bn.style.display='flex';
   if(!profile){
     profile=lsGet('kka_profile');
     if(!profile){show('s-welcome');return;}
@@ -450,6 +511,7 @@ function showTopics(){
   el('t-greeting').textContent='Hi '+profile.name+'! 👑';
   el('t-sub').textContent=profile.grade==='K'?'Kindergarten Math':'2nd Grade Math';
   renderTopicGrid('all');
+  updateBottomNav('practice');
   show('s-topics');
 }
 function renderTopicGrid(filter){
@@ -760,6 +822,170 @@ function renderParentProgress(){var c=el('parent-progress');if(!c)return;var p=g
 function renderParentResets(){var l=el('parent-reset-list');if(!l)return;l.innerHTML='';var p=getProgress();getTopicsForGrade().forEach(function(t){var tp=p[t.id];if(!tp||!tp.sessions)return;var b=document.createElement('button');b.style.cssText='width:100%;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.15);border-radius:10px;padding:8px 12px;margin-bottom:4px;cursor:pointer;font-size:12px;color:#f87171;font-family:Nunito,sans-serif;text-align:left';b.textContent='Reset '+t.name;b.onclick=function(){if(confirm('Reset '+t.name+'?')){var pr=getProgress();delete pr[t.id];lsSet('kka_progress',pr);renderParentProgress();renderParentResets();}};l.appendChild(b);});}
 function resetAllProgress(){if(confirm('Reset ALL progress?')){lsSet('kka_progress',{});renderParentProgress();renderParentResets();}}
 
+
+// ═══ LEARN MODE ═══
+var learnTopic = null;
+var learnSteps = [];
+var learnIdx = 0;
+
+// Lesson templates per topic type
+var LESSON_TEMPLATES = {
+  'addition': [
+    {title:'What is Addition?', eq:'2 + 3', explain:'Addition means putting numbers TOGETHER! When you see the plus sign (+), it means combine the groups.', result:''},
+    {title:'The Count On Strategy', eq:'5 + 3', explain:'Put the BIGGER number in your head. Show the smaller number on your fingers. Then count on!', result:''},
+    {title:'Watch Me!', eq:'5 + 3', explain:'5 is bigger. Put 5 in your head. Show 3 fingers. Count on from 5: 6, 7, 8!', result:'5 + 3 = 8 ✅'},
+    {title:'Your Turn — Think Along!', eq:'7 + 4', explain:'Which is bigger? 7! Put 7 in your head. Show 4 fingers. Count on from 7: 8, 9, 10, 11!', result:'7 + 4 = 11 ✅'},
+    {title:'One More Example!', eq:'9 + 6', explain:'9 is bigger. Put 9 in your head. Count on 6: 10, 11, 12, 13, 14, 15!', result:'9 + 6 = 15 ✅'},
+    {title:'You Got This!', eq:'', explain:'Remember: BIGGER number in your head, count on with your fingers! Now you are ready to practice!', result:'🌟 Great job! 🌟'}
+  ],
+  'subtraction': [
+    {title:'What is Subtraction?', eq:'8 - 3', explain:'Subtraction means taking away, or finding the difference. The minus sign (−) means subtract.', result:''},
+    {title:'The Count Up Strategy', eq:'9 - 4', explain:'Put the SMALLER number in your head. Count UP to the bigger number on your fingers. The fingers you held up = the answer!', result:''},
+    {title:'Watch Me!', eq:'9 - 4', explain:'Put 4 in your head. Count up to 9: 5, 6, 7, 8, 9. That is 5 fingers!', result:'9 - 4 = 5 ✅'},
+    {title:'Your Turn!', eq:'12 - 7', explain:'Put 7 in your head. Count up to 12: 8, 9, 10, 11, 12. That is 5 fingers!', result:'12 - 7 = 5 ✅'},
+    {title:'One More!', eq:'15 - 9', explain:'Put 9 in your head. Count up to 15: 10, 11, 12, 13, 14, 15. That is 6!', result:'15 - 9 = 6 ✅'},
+    {title:'You Got This!', eq:'', explain:'Remember: smaller number in your head, count UP to the bigger number. The number of counts is your answer!', result:'🌟 Ready to practice! 🌟'}
+  ],
+  'multiplication': [
+    {title:'What is Multiplication?', eq:'3 × 4', explain:'Multiplication means GROUPS OF! 3 × 4 means 3 groups with 4 in each group.', result:''},
+    {title:'Count All!', eq:'3 × 4', explain:'Draw 3 groups of 4: ⭐⭐⭐⭐  ⭐⭐⭐⭐  ⭐⭐⭐⭐ Now count them ALL: 1, 2, 3... 12!', result:'3 × 4 = 12 ✅'},
+    {title:'Repeated Addition', eq:'3 × 4', explain:'Multiplication is FAST addition! 3 groups of 4 means: 4 + 4 + 4 = 12!', result:'4 + 4 + 4 = 12 ✅'},
+    {title:'Easy Tricks!', eq:'', explain:'× 1 = same number! × 2 = double it! × 5 = count by 5s! × 10 = add a zero!', result:'These tricks make it fast!'},
+    {title:'Break Apart for Big Numbers', eq:'7 × 6', explain:'Break 6 into 5 and 1. You know 7 × 5 = 35 and 7 × 1 = 7. Add them: 35 + 7 = 42!', result:'7 × 6 = 42 ✅'},
+    {title:'You Got This!', eq:'', explain:'Remember: multiplication is groups! Count them all, or use repeated addition. For big numbers, break apart!', result:'🌟 Ready to practice! 🌟'}
+  ],
+  'division': [
+    {title:'What is Division?', eq:'12 ÷ 3', explain:'Division means SHARING EQUALLY! 12 ÷ 3 means: share 12 items among 3 groups. How many in each?', result:''},
+    {title:'Deal Them Out!', eq:'12 ÷ 3', explain:'Deal 12 cookies to 3 friends: 1 each, 2 each, 3 each, 4 each! Each friend gets 4!', result:'12 ÷ 3 = 4 ✅'},
+    {title:'Think Multiplication!', eq:'12 ÷ 3', explain:'Division is multiplication backwards! Ask: what TIMES 3 equals 12? 4 × 3 = 12! So 12 ÷ 3 = 4!', result:'? × 3 = 12 → 4! ✅'},
+    {title:'Easy Tricks!', eq:'', explain:'÷ 1 = same number! ÷ 2 = cut in half! ÷ 10 = remove a zero!', result:'These tricks make it fast!'},
+    {title:'Break Apart for Big Numbers', eq:'84 ÷ 4', explain:'Break 84 into 80 and 4. 80 ÷ 4 = 20, and 4 ÷ 4 = 1. Add: 20 + 1 = 21!', result:'84 ÷ 4 = 21 ✅'},
+    {title:'You Got This!', eq:'', explain:'Remember: division is fair sharing! Think multiplication backwards. For big numbers, break apart!', result:'🌟 Ready to practice! 🌟'}
+  ],
+  'general': [
+    {title:'Let us Learn!', eq:'', explain:'This topic will teach you a new math skill. Listen carefully and follow along!', result:''},
+    {title:'Ready to Practice!', eq:'', explain:'Now you know the strategy. Time to try some questions!', result:'🌟 You can do it! 🌟'}
+  ]
+};
+
+function getTopicLessonType(topicId){
+  if(topicId.indexOf('add')>=0 || topicId.indexOf('Add')>=0) return 'addition';
+  if(topicId.indexOf('sub')>=0 || topicId.indexOf('Sub')>=0) return 'subtraction';
+  if(topicId.indexOf('mult')>=0 || topicId.indexOf('Mult')>=0) return 'multiplication';
+  if(topicId.indexOf('div')>=0 || topicId.indexOf('Div')>=0) return 'division';
+  return 'general';
+}
+
+function buildLearnSteps(topic){
+  var type = getTopicLessonType(topic.id);
+  var base = LESSON_TEMPLATES[type] || LESSON_TEMPLATES['general'];
+  var steps = [];
+
+  // Add intro from the topic's own learn text
+  if(topic.subs && topic.subs.length > 0){
+    topic.subs.forEach(function(sub){
+      if(sub.learn){
+        steps.push({title:sub.name, eq:'', explain:sub.learn, result:''});
+      }
+    });
+  }
+
+  // Add the template steps
+  base.forEach(function(s){ steps.push(s); });
+
+  return steps;
+}
+
+function showLearnTopics(){
+  if(!profile){profile=lsGet('kka_profile');if(!profile){show('s-welcome');return;}}
+  var grid = el('learn-topic-grid');
+  grid.innerHTML = '';
+  var topics = getTopicsForGrade();
+  topics.forEach(function(topic){
+    var totalQ = 0;
+    topic.subs.forEach(function(s){ totalQ += s.q.length; });
+    var icon = TOPIC_ICONS[topic.id] || '📘';
+    var card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = '<div class="tc-icon">'+icon+'</div><div class="tc-info"><div class="tc-name">'+topic.name+'</div><div class="tc-sub">Voice-guided lesson</div></div><div class="tc-arrow">📚</div>';
+    card.onclick = function(){ startLearn(topic); };
+    grid.appendChild(card);
+  });
+  updateBottomNav('learn');
+  show('s-learn-topics');
+}
+
+function startLearn(topic){
+  learnTopic = topic;
+  learnSteps = buildLearnSteps(topic);
+  learnIdx = 0;
+  el('ll-topic-name').textContent = topic.name;
+  el('ll-nav-title').textContent = '📚 ' + topic.name;
+  el('ll-icon').textContent = TOPIC_ICONS[topic.id] || '📚';
+  show('s-learn-lesson');
+  renderLearnStep();
+}
+
+function renderLearnStep(){
+  if(learnIdx < 0) learnIdx = 0;
+  if(learnIdx >= learnSteps.length) learnIdx = learnSteps.length - 1;
+  var step = learnSteps[learnIdx];
+  el('ll-step-title').textContent = step.title;
+  el('ll-equation').textContent = step.eq || '';
+  el('ll-explanation').textContent = step.explain;
+  el('ll-result').textContent = step.result || '';
+  el('ll-step-count').textContent = 'Step ' + (learnIdx+1) + ' of ' + learnSteps.length;
+  el('ll-next-btn').textContent = learnIdx >= learnSteps.length-1 ? '✅ Done!' : 'Next →';
+
+  // Progress dots
+  var dots = '';
+  for(var i=0; i<learnSteps.length; i++){
+    dots += '<div style="width:8px;height:8px;border-radius:50%;background:'+(i===learnIdx?'#ffd200':'rgba(255,255,255,.2)')+'"></div>';
+  }
+  el('ll-dots').innerHTML = dots;
+
+  // Speak
+  clearSpeech();
+  speechCancelled = false;
+  var speakText = step.title + '. ';
+  if(step.eq) speakText += step.eq.replace('+', ' plus ').replace('-', ' minus ').replace('×', ' times ').replace('÷', ' divided by ') + '. ';
+  speakText += step.explain;
+  if(step.result && step.result.indexOf('🌟') < 0) speakText += ' ' + step.result;
+  speak(speakText);
+}
+
+function learnNext(){
+  if(learnIdx >= learnSteps.length - 1){
+    showLearnTopics();
+    return;
+  }
+  learnIdx++;
+  renderLearnStep();
+}
+
+function learnPrev(){
+  if(learnIdx <= 0) return;
+  learnIdx--;
+  renderLearnStep();
+}
+
+function startPracticeFromLearn(){
+  if(learnTopic){
+    clearSpeech();
+    updateBottomNav('practice');
+    startPractice(learnTopic);
+  }
+}
+
+function updateBottomNav(active){
+  var tabs = ['learn','practice','compete','hub'];
+  tabs.forEach(function(t){
+    var el2 = document.getElementById('bn-'+t);
+    if(el2) el2.className = (t===active) ? 'active' : '';
+  });
+}
+
+
 // ═══ BOOT ═══
 profile=lsGet('kka_profile');
 if(profile&&profile.name&&profile.grade){
@@ -769,5 +995,13 @@ if(profile&&profile.name&&profile.grade){
 }
 
 </script>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+  <a onclick="showLearnTopics()" id="bn-learn"><span class="bn-icon">📚</span>Learn</a>
+  <a onclick="showTopics()" id="bn-practice" class="active"><span class="bn-icon">✏️</span>Practice</a>
+  <a href="https://tboy2020.github.io/Kingdom-Math/competition/" id="bn-compete"><span class="bn-icon">⚔️</span>Compete</a>
+  <a href="https://tboy2020.github.io/Kingdom-Math/" id="bn-hub"><span class="bn-icon">🏠</span>Hub</a>
+</div>
 </body>
 </html>
