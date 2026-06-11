@@ -1,0 +1,153 @@
+{
+  "session_plan": "Kingdom Kids Academy \u2014 Next Session Priority",
+  "updated": "2026-06-10",
+  "PRIORITY_1_animated_visual_learn_mode": {
+    "what": "Transform Learn mode from text-only to animated + visual + voice",
+    "components_to_build": {
+      "animated_number_line": {
+        "desc": "HTML/CSS number line 0-20 (expandable) that draws dynamically",
+        "features": [
+          "Start number = green highlighted circle",
+          "End/answer number = gold highlighted circle",
+          "Arcs animate one by one above the line with +1 labels",
+          "Voice narrates EACH jump in sync: '6... 7... 8!'",
+          "For subtraction: arcs go from small to big (count up)",
+          "For multiplication: bigger arcs showing skip counting (+3, +3, +3)",
+          "Speed: ~800ms per jump so child can follow"
+        ]
+      },
+      "visual_groups": {
+        "desc": "Emoji groups that appear for multiplication/division",
+        "features": [
+          "3 \u00d7 4: Three groups of 4 stars appear one group at a time",
+          "Voice counts: 'Group 1: 4. Group 2: 4 plus 4 is 8. Group 3: 8 plus 4 is 12!'",
+          "Division: items deal out one by one to groups"
+        ]
+      },
+      "step_by_step_column": {
+        "desc": "For double-digit: show stacking method animated",
+        "features": [
+          "Numbers stack on top of each other",
+          "Ones column highlights, adds, shows carry",
+          "Tens column highlights, adds with carry",
+          "Answer appears digit by digit"
+        ]
+      }
+    },
+    "per_operation_visuals": {
+      "addition_to_10": "Number line 0-10, jump arcs, count on from bigger",
+      "addition_to_20": "Number line 0-20, jump arcs, count on from bigger",
+      "subtraction_to_10": "Number line 0-10, jump arcs counting UP from smaller",
+      "subtraction_to_20": "Number line 0-20, jump arcs counting UP from smaller",
+      "addition_to_100": "Stacking column method animated (ones then tens)",
+      "subtraction_to_100": "Stacking column method with borrow animation",
+      "multiplication_1_10": "Groups of emoji appearing + repeated addition shown",
+      "division_1_10": "Items dealing out to groups one by one",
+      "double_digit_multiply": "Break apart visual: 14\u00d73 = (10\u00d73) + (4\u00d73) shown side by side",
+      "double_digit_divide": "Break apart: 84\u00f74 = (80\u00f74) + (4\u00f74) shown side by side",
+      "fractions": "Shape dividing into equal parts, coloring portions",
+      "time": "Animated clock face with hands moving",
+      "money": "Coins appearing and being counted",
+      "measurement": "Ruler with object being measured"
+    }
+  },
+  "PRIORITY_2_improve_hints_with_visuals": {
+    "what": "Practice mode hints should ALSO use the animated number line",
+    "flow": "Child taps hint \u2192 number line animates inside the hint box \u2192 voice narrates"
+  },
+  "PRIORITY_3_kid_friendly_subtopic_names": {
+    "what": "Rename all subtopics to child-friendly names",
+    "examples": {
+      "Adding in any order (Commutative Property)": "Numbers Can Swap!",
+      "Make 10 to Add": "Make a Ten First!",
+      "Near Doubles": "Almost Doubles!",
+      "Count Up to Subtract": "Count Up to Find the Answer!",
+      "Fact Families": "Number Families!",
+      "Equal Parts": "Fair Sharing Shapes!",
+      "Expanded Form": "Break the Number Apart!"
+    }
+  },
+  "decisions_confirmed_this_session": {
+    "addition_strategy": "ALWAYS Count On from bigger number (never Make 10 as primary)",
+    "subtraction_to_20": "Count Up from smaller number",
+    "subtraction_to_100": "Stack and Borrow",
+    "name_frequency": "1st correct + every 5th + session end only",
+    "voice_announces_subtopic": "Yes, when subtopic changes",
+    "scripture_on_wrong": "50 KJV verses rotating, no name",
+    "both_grades_same_content": "Anu learns same as Dominion, 2G gets extra double/triple digit",
+    "multiplication_K": "1-10 (no double digit)",
+    "multiplication_2G": "1-10 plus double digit",
+    "learn_required": "TBD - not yet decided",
+    "bottom_nav": "Learn / Practice / Compete / Hub",
+    "academy_is_main_hub": true
+  },
+  "files": {
+    "app": "/mnt/user-data/outputs/kingdom-academy.html",
+    "questions_620": "/mnt/user-data/outputs/ixl-g2-questions.json",
+    "strategies_28": "/mnt/user-data/outputs/teaching-strategies.json",
+    "curriculum": "/mnt/user-data/outputs/curriculum-plan.json",
+    "competition": "/mnt/user-data/outputs/math-competition.html"
+  },
+  "github_repos": {
+    "academy": "tboy2020/Kingdom-Kids-Academy (main hub)",
+    "math_suite": "tboy2020/Kingdom-Math (competition + voice math + times tables)",
+    "rental_calc": "tboy2020/realtorVera-rental-calculator"
+  },
+  "remaining_after_visuals": [
+    "Language Arts curriculum (reading, spelling, grammar)",
+    "Science curriculum",
+    "Social Studies curriculum",
+    "Package as sellable product",
+    "PWA with service worker for offline",
+    "Possible voice input for answers (say the answer instead of tap)"
+  ],
+  "PRIORITY_0_consolidation": {
+    "what": "Academy becomes THE ONE APP \u2014 everything moves into it",
+    "steps": [
+      "1. Move Math Competition code INTO Academy (new tab/screen)",
+      "2. Move Voice Math Tutor INTO Academy (merge with Practice mode voice)",
+      "3. Build unified dashboard: Learn progress + Practice scores + Competition results",
+      "4. Remove from Hub: Times Tables (DONE), Voice Math, eventually Competition",
+      "5. Academy bottom nav becomes: Learn \u2022 Practice \u2022 Compete \u2022 Dashboard",
+      "6. Eventually retire Kingdom-Math Hub entirely \u2014 Academy IS the hub",
+      "7. Add Break Time (in minutes) setting to Competition parent dashboard"
+    ],
+    "keep_from_competition": [
+      "Multi-player setup (2-6 players)",
+      "A/B/C voice options with 'final answer' confirmation",
+      "Per-question 2-min timer",
+      "Round-based play with breaks",
+      "Podium/results with tie handling",
+      "Dashboard saves per-child cumulative stats"
+    ],
+    "keep_from_voice_math": [
+      "Single-player voice Q&A per topic",
+      "Tap mic to answer",
+      "Badge system (2 sessions at 80%)",
+      "Topic progression (unlock next)"
+    ],
+    "unified_dashboard": {
+      "tracks": [
+        "Learn lessons completed per topic",
+        "Practice sessions + scores per topic",
+        "Competition games + per-child stats"
+      ],
+      "single_localStorage_key": "kka_unified_progress",
+      "parent_features": [
+        "PIN-protected settings",
+        "Reset per topic or all",
+        "Review all questions"
+      ]
+    },
+    "done_this_session": [
+      "Removed Times Tables from Hub",
+      "Added Academy as featured #1 card on Hub"
+    ]
+  },
+  "quick_fixes_next_session": [
+    "Competition: Add 'Break time' setting in minutes to Progress Dashboard parent settings",
+    "Competition: Break duration should be configurable (currently auto)",
+    "Test all Learn mode visuals on phone + laptop",
+    "Verify number line auto-scroll works on phone"
+  ]
+}
