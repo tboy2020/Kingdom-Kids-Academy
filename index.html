@@ -1456,7 +1456,7 @@ function startPracticeFromLearn(){
 }
 
 function updateBottomNav(active){
-  var tabs = ['learn','practice','compete','dashboard'];
+  var tabs = ['learn','practice','compete'];
   tabs.forEach(function(t){
     var el2 = document.getElementById('bn-'+t);
     if(el2) el2.className = (t===active) ? 'active' : '';
@@ -1637,7 +1637,7 @@ if(profile&&profile.name&&profile.grade){
   <a onclick="showLearnTopics()" id="bn-learn"><span class="bn-icon">📚</span>Learn</a>
   <a onclick="showTopics()" id="bn-practice" class="active"><span class="bn-icon">✏️</span>Practice</a>
   <a href="https://tboy2020.github.io/Kingdom-Math/competition/" id="bn-compete"><span class="bn-icon">⚔️</span>Compete</a>
-  <a href="https://tboy2020.github.io/Kingdom-Math/dashboard/" id="bn-dashboard"><span class="bn-icon">📊</span>Dashboard</a>
+
 </div>
 </body>
 </html>
