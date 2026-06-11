@@ -1191,12 +1191,12 @@ var LESSON_TEMPLATES = {
     {title:'You Got This!', eq:'', explain:'Remember: multiplication is groups! Skip count on the number line. For big numbers, break apart!', result:'🌟 Ready to practice! 🌟'}
   ],
   'division': [
-    {title:'What is Division?', eq:'12 ÷ 3', explain:'Division means SHARING EQUALLY! 12 ÷ 3 means: share 12 items among 3 groups. How many in each?', result:''},
-    {title:'Deal Them Out!', eq:'12 ÷ 3', explain:'Deal 12 cookies to 3 friends: 1 each, 2 each, 3 each, 4 each! Each friend gets 4!', result:'12 ÷ 3 = 4 ✅'},
-    {title:'Think Multiplication!', eq:'12 ÷ 3', explain:'Division is multiplication backwards! Ask: what TIMES 3 equals 12? 4 × 3 = 12! So 12 ÷ 3 = 4!', result:'? × 3 = 12 → 4! ✅'},
-    {title:'Easy Tricks!', eq:'', explain:'÷ 1 = same number! ÷ 2 = cut in half! ÷ 10 = remove a zero!', result:'These tricks make it fast!'},
-    {title:'Break Apart for Big Numbers', eq:'84 ÷ 4', explain:'Break 84 into 80 and 4. 80 ÷ 4 = 20, and 4 ÷ 4 = 1. Add: 20 + 1 = 21!', result:'84 ÷ 4 = 21 ✅'},
-    {title:'You Got This!', eq:'', explain:'Remember: division is fair sharing! Think multiplication backwards. For big numbers, break apart!', result:'🌟 Ready to practice! 🌟'}
+    {title:'What is Division?', eq:'', explain:'Division means SHARING EQUALLY! If you have items and groups, deal them out until everyone has the same amount.', result:''},
+    {title:'The Sharing Strategy', eq:'', explain:'Give 1 to each group. Go around again. Keep going until everything is shared! Count what each group has. That is the answer!', result:''},
+    {title:'Watch Me!', eq:'12 ÷ 3', explain:'12 items shared among 3 groups. Watch them deal out!', result:''},
+    {title:'Your Turn!', eq:'10 ÷ 2', explain:'10 items shared between 2 groups. Watch!', result:''},
+    {title:'One More!', eq:'15 ÷ 5', explain:'15 items shared among 5 groups!', result:''},
+    {title:'You Got This!', eq:'', explain:'Remember: division is fair sharing! Deal them out equally. Count what each group has!', result:'🌟 Ready to practice! 🌟'}
   ],
   'general': [
     {title:'Let us Learn!', eq:'', explain:'This topic will teach you a new math skill. Listen carefully and follow along!', result:''},
@@ -1292,7 +1292,14 @@ function renderLearnStep(){
     if(eq.indexOf('×')>=0){
       var ps3=eq.replace(/\s/g,'').split('×');
       var a3=parseInt(ps3[0])||0, b3=parseInt(ps3[1])||0;
-      setTimeout(function(){ showNumberLineLesson(vis, eq, a3*b3, 'multiply'); }, 800);
+      setTimeout(function(){ showMultiplicationGroups(vis, a3, b3, a3*b3); }, 800);
+      return;
+    }
+    if(eq.indexOf('÷')>=0){
+      var ps4=eq.replace(/\s/g,'').split('÷');
+      var a4=parseInt(ps4[0])||0, b4=parseInt(ps4[1])||0;
+      var ans4=Math.round(a4/b4);
+      setTimeout(function(){ showDivisionDealing(vis, a4, b4, ans4); }, 800);
       return;
     }
   }
