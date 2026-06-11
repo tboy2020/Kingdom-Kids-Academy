@@ -853,11 +853,7 @@ function buildNumberLine(container, from, to, startNum, operation){
   // Auto-scroll to start position
   setTimeout(function(){
     var startDot = document.getElementById('nld-' + startNum);
-    var wrap = document.getElementById('nl-wrap');
-    if(startDot && wrap){
-      var scrollTo = startDot.offsetLeft - (wrap.offsetWidth / 2) + 16;
-      wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
-    }
+    if(startDot) startDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   }, 200);
 }
 
@@ -873,11 +869,7 @@ function animateJumps(startVal, count, direction, onDone, mode){
       var finalDot = document.getElementById('nld-' + finalNum);
       if(finalDot){
         finalDot.className = 'nl-dot end';
-        var wrap = document.getElementById('nl-wrap');
-        if(wrap){
-          var scrollTo = finalDot.offsetLeft - (wrap.offsetWidth / 2) + 13;
-          wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
-        }
+        finalDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
       }
       // Addition: show the answer (landing position). Subtraction: show jump count
       if(mode === 'sub'){
@@ -894,12 +886,7 @@ function animateJumps(startVal, count, direction, onDone, mode){
     var nextDot = document.getElementById('nld-' + nextVal);
     if(nextDot){
       nextDot.className = 'nl-dot active';
-      // Auto-scroll to keep active dot visible
-      var wrap = document.getElementById('nl-wrap');
-      if(wrap){
-        var scrollTo = nextDot.offsetLeft - (wrap.offsetWidth / 2) + 16;
-        wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
-      }
+      nextDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
     }
     
     // Show arc between current and next
@@ -991,13 +978,8 @@ function animateSkipCount(startVal, skipBy, numJumps, onDone){
       var dot = document.getElementById('nld-' + i);
       if(dot) dot.className = 'nl-dot active';
     }
-    // Scroll to latest position
     var lastDot = document.getElementById('nld-' + nextVal);
-    var wrap = document.getElementById('nl-wrap');
-    if(lastDot && wrap){
-      var scrollTo = lastDot.offsetLeft - (wrap.offsetWidth / 2) + 16;
-      wrap.scrollTo({left: Math.max(0, scrollTo), behavior: 'smooth'});
-    }
+    if(lastDot) lastDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
     jumpsDone++;
     current = nextVal;
     el('nl-counter').textContent = current + ' (' + jumpsDone + ' group' + (jumpsDone > 1 ? 's' : '') + ')';
