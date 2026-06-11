@@ -879,7 +879,7 @@ function buildNumberLine(container, from, to, startNum, operation){
     if(i === startNum) cls += ' start';
     html += '<div class="nl-num"><div class="' + cls + '" id="nld-' + i + '">' + i + '</div></div>';
   }
-  html += '</div><div class="nl-counter" id="nl-counter"></div></div>';
+  html += '</div></div><div class="nl-counter" id="nl-counter"></div>';
   container.innerHTML = html;
   // Auto-scroll to start position
   setTimeout(function(){
@@ -900,7 +900,9 @@ function animateJumps(startVal, count, direction, onDone, mode){
       var finalDot = document.getElementById('nld-' + finalNum);
       if(finalDot){
         finalDot.className = 'nl-dot end';
-        smoothScrollNL('nld-' + finalNum);
+        // Scroll to midpoint between start and answer so both are visible
+        var midNum = Math.round((startVal + finalNum) / 2);
+        smoothScrollNL('nld-' + midNum);
       }
       // Addition: show the answer (landing position). Subtraction: show jump count
       if(mode === 'sub'){
