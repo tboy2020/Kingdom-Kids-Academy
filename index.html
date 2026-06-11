@@ -840,6 +840,37 @@ function resetAllProgress(){if(confirm('Reset ALL progress?')){lsSet('kka_progre
 
 
 // ═══ ANIMATED NUMBER LINE ═══
+function scrollNL(dotId){
+  var dot = document.getElementById(dotId);
+  var wrap = document.getElementById('nl-wrap');
+  if(!dot || !wrap) return;
+  var dotRect = dot.getBoundingClientRect();
+  var wrapRect = wrap.getBoundingClientRect();
+  var dotCenter = dot.offsetLeft + (dot.offsetWidth / 2);
+  var wrapCenter = wrap.offsetWidth / 2;
+  var target = dotCenter - wrapCenter;
+  wrap.scrollLeft = target;
+}
+function smoothScrollNL(dotId){
+  var dot = document.getElementById(dotId);
+  var wrap = document.getElementById('nl-wrap');
+  if(!dot || !wrap) return;
+  var dotCenter = dot.offsetLeft + (dot.offsetWidth / 2);
+  var wrapCenter = wrap.offsetWidth / 2;
+  var target = dotCenter - wrapCenter;
+  var start = wrap.scrollLeft;
+  var diff = target - start;
+  var duration = 300;
+  var startTime = null;
+  function step(ts){
+    if(!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    wrap.scrollLeft = start + diff * progress;
+    if(progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 function buildNumberLine(container, from, to, startNum, operation){
   var html = '<div class="numline-wrap" id="nl-wrap"><div class="numline" id="nl-inner">';
   for(var i = from; i <= to; i++){
@@ -853,7 +884,7 @@ function buildNumberLine(container, from, to, startNum, operation){
   // Auto-scroll to start position
   setTimeout(function(){
     var startDot = document.getElementById('nld-' + startNum);
-    if(startDot) startDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    scrollNL('nld-' + startNum);
   }, 200);
 }
 
@@ -869,7 +900,7 @@ function animateJumps(startVal, count, direction, onDone, mode){
       var finalDot = document.getElementById('nld-' + finalNum);
       if(finalDot){
         finalDot.className = 'nl-dot end';
-        finalDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+        smoothScrollNL('nld-' + finalNum);
       }
       // Addition: show the answer (landing position). Subtraction: show jump count
       if(mode === 'sub'){
@@ -886,7 +917,7 @@ function animateJumps(startVal, count, direction, onDone, mode){
     var nextDot = document.getElementById('nld-' + nextVal);
     if(nextDot){
       nextDot.className = 'nl-dot active';
-      nextDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+      smoothScrollNL('nld-' + nextVal);
     }
     
     // Show arc between current and next
@@ -979,7 +1010,7 @@ function animateSkipCount(startVal, skipBy, numJumps, onDone){
       if(dot) dot.className = 'nl-dot active';
     }
     var lastDot = document.getElementById('nld-' + nextVal);
-    if(lastDot) lastDot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    smoothScrollNL('nld-' + nextVal);
     jumpsDone++;
     current = nextVal;
     el('nl-counter').textContent = current + ' (' + jumpsDone + ' group' + (jumpsDone > 1 ? 's' : '') + ')';
